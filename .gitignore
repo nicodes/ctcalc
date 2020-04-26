@@ -1,5 +1,2 @@
-*.env
-
-.DS_Store
 notes
-db
+.DS_Store

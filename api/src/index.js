@@ -1,27 +1,39 @@
 const express = require('express')
+const cors = require('cors')
 const { Pool } = require('pg')
+const fs = require('fs');
 
-const host = process.env.HOST
-const port = process.env.PORT
-const dbHost = process.env.DB_HOST
-const dbPort = process.env.DB_PORT
-const dbName = process.env.DB_NAME
-const dbUser = process.env.DB_USER
-const dbPwd = process.env.DB_PWD
+const {
+    ENV,
+    HOST,
+    PORT,
+    DB_HOST,
+    DB_PORT,
+    DB_NAME,
+    DB_USER,
+    DB_PWD
+} = process.env
 
 const app = express()
+app.use(cors())
 
-const pool = new Pool({
-    host: dbHost,
-    port: dbPort,
-    database: dbName,
-    user: dbUser,
-    password: dbPwd,
-})
+const dbConfig = {
+    host: DB_HOST,
+    port: DB_PORT,
+    database: DB_NAME,
+    user: DB_USER,
+    password: DB_PWD
+}
+const pool = new Pool(ENV === 'prod' ? {
+    ...dbConfig, ssl: {
+        rejectUnauthorized: false,
+        ca: fs.readFileSync('certs/ca-certificate.crt').toString()
+    }
+} : dbConfig)
 
 app.get('/:pathogen/:disinfectant', (apiReq, apiRes) => {
     const { pathogen, disinfectant } = apiReq.params
-    console.log(`GET /:${pathogen}/:${disinfectant}`, apiReq.query)
+    console.log(`GET /${pathogen}/${disinfectant}`, apiReq.query)
 
     const temperature = Number(apiReq.query.temperature)
     const logInactivation = Number(apiReq.query.logInactivation)
@@ -70,22 +82,29 @@ app.get('/:pathogen/:disinfectant', (apiReq, apiRes) => {
             validationErrors.logInactivation = { invalidValue: logInactivation, validValues: validLogInactivations }
     }
 
-    /* if no validation errors */
+    /* if no validation errors run sql */
     if (Object.keys(validationErrors).length === 0) {
-        const sql = `SELECT inactivation FROM ${pathogen}.${disinfectant.replace('-', '_')} WHERE temperature = ${temperature} AND log_inactivation = ${logInactivation}; `
-        console.log(sql)
-        pool.query(sql, (dbErr, dbRes) => {
-            // TODO do some checking here 
-            apiRes.status(200).send(dbRes.rows)
-            // pool.end() // TODO where does it make most sense to end the pool?
-        })
+        const sql = `SELECT inactivation FROM ${pathogen}.${disinfectant.replace('-', '_')} WHERE temperature = ${temperature} AND log_inactivation = ${logInactivation};`;
+        (async () => {
+            try {
+                const dbRes = await pool.query(sql)
+                // await pool.end() // TODO where should this be handled?
+                apiRes.status(200).send(dbRes.rows[0])
+            } catch (err) {
+                console.log(err)
+            }
+        })()
     } else {
         apiRes.status(422).send(validationErrors)
     }
 })
 
+app.get('/test', function (req, res) {
+    res.status(200).send('test');
+});
+
 app.get('*', function (req, res) {
     res.status(404).send('Not found');
 });
 
-app.listen(port, () => console.log(`API listening on http://${host}:${port}`))
+app.listen(PORT, () => console.log(`API listening on http://${HOST}:${PORT}`))
