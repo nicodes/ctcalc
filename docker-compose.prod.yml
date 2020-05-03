@@ -1,0 +1,20 @@
+version: "3"
+services:
+  api:
+    image: nicodes/ctcalc-api
+    env_file:
+      - .env.prod.api
+      # - ./api/.env.prod # local testing
+    ports:
+      - 8080:8080
+  server:
+    image: nginx
+    depends_on:
+      - api
+    ports:
+      - 80:80
+    volumes:
+      # - ./nginx.conf:/etc/nginx/nginx.conf # TODO get reverse proxy working
+      - /root/app/build/:/usr/share/nginx/html/
+      # - ./client/build/:/usr/share/nginx/html/ # local testing
+    

@@ -1,0 +1,17 @@
+version: "3"
+services:
+  api:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile.prod
+    image: nicodes/ctcalc-api
+  # TODO client build is handled manually
+  # client:
+  #   build:
+  #     context: ./client/
+  #     dockerfile: Dockerfile.prod
+  #   volumes:
+  #     - ./client/build/:/usr/src/app/build
+  #   env_file:
+  #     - ./client/.env.prod
+  #   # image: nicodes/ctcalc-client
