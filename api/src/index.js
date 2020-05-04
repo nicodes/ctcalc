@@ -24,12 +24,14 @@ const dbConfig = {
     user: DB_USER,
     password: DB_PWD
 }
-const pool = new Pool(ENV === 'prod' ? {
-    ...dbConfig, ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync('certs/ca-certificate.crt').toString()
-    }
-} : dbConfig)
+const pool = new Pool(
+    //     ENV === 'prod' ? {
+    //     ...dbConfig, ssl: {
+    //         rejectUnauthorized: false,
+    //         ca: fs.readFileSync('certs/ca-certificate.crt').toString()
+    //     }
+    // } : 
+    dbConfig)
 
 app.get('/:pathogen/:disinfectant', (apiReq, apiRes) => {
     const { pathogen, disinfectant } = apiReq.params
