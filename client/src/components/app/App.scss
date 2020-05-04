@@ -1,0 +1,7 @@
+@import '../../styles/colors.scss';
+
+#App {
+  height: 100%;
+  display: grid;
+  grid-template-rows: min-content auto;
+}

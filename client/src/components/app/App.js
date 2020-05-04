@@ -1,24 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'
-import './App.css';
-
-const apiUrl = process.env.REACT_APP_API_URL
+import Calculator from '../calculator/Calculator'
+import './App.scss';
 
 function App() {
-  const [inactivation, setInactivation] = useState('loading...')
+  const [disinfectantType, setDisinfectantType] = useState('')
+  const [disinfectantConcentration, setDisinfectantConcentration] = useState('')
+  const [time, setTime] = useState('')
+  const [temperature, setTempterature] = useState('')
+  const [logGardia, setLogGiardia] = useState('')
+  const [logVirus, setLogVirus] = useState('')
 
-  useEffect(() => {
-    (async function () {
-      const url = `${apiUrl}/virus/chlorine-dioxide?temperature=1&logInactivation=2`
-      const { data } = await axios.get(url)
-      setInactivation(data.inactivation)
-    })()
-  }, [])
+  const [giardiaResult, setGiardiaResult] = useState('')
+  const [virusResult, setVirusResult] = useState('')
 
   return (
-    <div className="App">
-      {inactivation}
-    </div>
+    <div id="App">
+      <header style={{ backgroundColor: 'lightgrey' }}>header</header>
+      <main>
+        <Calculator
+          disinfectantType={disinfectantType}
+          setDisinfectantType={setDisinfectantType}
+          disinfectantConcentration={disinfectantConcentration}
+          setDisinfectantConcentration={setDisinfectantConcentration}
+          time={time}
+          setTime={setTime}
+          temperature={temperature}
+          setTempterature={setTempterature}
+          logGiardia={logGardia}
+          setLogGiardia={setLogGiardia}
+          logVirus={logVirus}
+          setLogVirus={setLogVirus}
+          giardiaResult={giardiaResult}
+          setGiardiaResult={setGiardiaResult}
+          virusResult={virusResult}
+          setVirusResult={setVirusResult}
+        />
+      </main>
+    </div >
   );
 }
 
