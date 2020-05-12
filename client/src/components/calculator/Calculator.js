@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios'
 
 import Select from '../select/Select';
@@ -24,21 +24,25 @@ function Calculator({
     virusResult,
     setVirusResult
 }) {
+    const [validationErrors, setValidationErrors] = useState([])
 
     /* handle submit button click */
     function submit() {
         (async () => {
-            const giardiaUrl = `${apiUrl}/giardia/${disinfectantType}?temperature=${temperature}&logInactivation=${logGiardia}`
-            const virusUrl = `${apiUrl}/virus/${disinfectantType}?temperature=${temperature}&logInactivation=${logVirus}`
-            // console.log(giardiaUrl)
-            // console.log(virusUrl)
-
-            const [giardiaRes, virusRes] = await Promise.all([axios.get(giardiaUrl), axios.get(virusUrl)]);
-            // console.log(giardiaRes)
-            // console.log(virusRes)
-
-            setGiardiaResult(giardiaRes.data)
-            setVirusResult(virusRes.data)
+            const giardiaUrl = `${apiUrl}/${disinfectantType}/giardia?temperature=${temperature}&log-inactivation=${logGiardia}`
+            const virusUrl = `${apiUrl}/${disinfectantType}/virus?temperature=${temperature}&log-inactivation=${logVirus}`
+            try {
+                const [giardiaRes, virusRes] = await Promise.all([axios.get(giardiaUrl), axios.get(virusUrl)]);
+                setValidationErrors([])
+                setGiardiaResult(giardiaRes.data)
+                setVirusResult(virusRes.data)
+            } catch (error) {
+                const { response } = error
+                console.log(response)
+                if (response.status === 400) {
+                    setValidationErrors(response.data)
+                }
+            }
         })()
     }
 
@@ -53,6 +57,14 @@ function Calculator({
     }
 
     return (<div className={'calculator'}>
+        <div style={{
+            marginTop: '20px',
+            padding: '20px',
+            textAlign: 'center',
+            backgroundColor: '#fcf8e3',
+            border: 'solid 2px #faf2cc',
+            color: '#8a6d3b'
+        }}>WARNING: this site is under development and should only be used for testing</div>
         <h1>Calculator</h1>
         <form>
             <span>Disinfectant Type:</span>
@@ -69,12 +81,12 @@ function Calculator({
             <span>Temperature (°C):</span>
             <input type='number' step='0.01' min='0' value={temperature} onChange={e => setTempterature(e.target.value)}></input>
 
-            <span>Logs of Giardia Inactivation::</span>
+            <span>Logs of Giardia Inactivation:</span>
             <Select options={logGiardiaOptions}
                 value={logGiardia}
                 onChange={setLogGiardia} />
 
-            <span>Logs of Virus Inactivation::</span>
+            <span>Logs of Virus Inactivation:</span>
             <Select options={logVirusOptions}
                 value={logVirus}
                 onChange={setLogVirus} />
@@ -89,6 +101,7 @@ function Calculator({
             <span>Giardia Result: {JSON.stringify(giardiaResult)}</span>
             <br />
             <span>Virus Result: {JSON.stringify(virusResult)}</span>
+            {validationErrors.map(({ parameter, value, validInputs }) => <div>{`Invalid ${parameter}: ${value}. Valid inputs: ${JSON.stringify(validInputs)}`}</div>)}
         </div>
     </div >);
 }

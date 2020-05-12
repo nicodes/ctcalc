@@ -3,8 +3,11 @@ const cors = require('cors')
 const { Pool } = require('pg')
 const fs = require('fs');
 
+const { interpolationBounds, interpolate } = require('./utils')
+const { validate, getValidInputs } = require('./validate')
+
 const {
-    ENV,
+    NODE_ENV,
     HOST,
     PORT,
     DB_HOST,
@@ -25,7 +28,7 @@ const dbConfig = {
     password: DB_PWD
 }
 const pool = new Pool(
-    //     ENV === 'prod' ? {
+    //     NODE_ENV === 'prod' ? {
     //     ...dbConfig, ssl: {
     //         rejectUnauthorized: false,
     //         ca: fs.readFileSync('certs/ca-certificate.crt').toString()
@@ -33,71 +36,37 @@ const pool = new Pool(
     // } : 
     dbConfig)
 
-app.get('/:pathogen/:disinfectant', (apiReq, apiRes) => {
-    const { pathogen, disinfectant } = apiReq.params
-    console.log(`GET /${pathogen}/${disinfectant}`, apiReq.query)
+app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
+    console.log(`GET /${apiReq.params.disinfectant}/${apiReq.params.pathogen}`, apiReq.query)
 
+    const disinfectant = apiReq.params.disinfectant.replace('-', '_')
+    const { pathogen } = apiReq.params
     const temperature = Number(apiReq.query.temperature)
-    const logInactivation = Number(apiReq.query.logInactivation)
-    const ph = Number(apiReq.query.ph)
-    const concentration = Number(apiReq.query.concentration)
+    const logInactivation = Number(apiReq.query['log-inactivation'])
+    // const ph = Number(apiReq.query.ph)
+    // const concentration = Number(apiReq.query.concentration)
 
-    /* param validation */
-    const validPathogens = ['giardia', 'virus']
-    const validDisinfectants = ['chloramine', 'chlorine-dioxide', 'free-chlorine', 'ozone']
-    let validTemperatures, validLogInactivations
-    const validationErrors = {}
-
-    if (pathogen === 'giardia') {
-        if (disinfectant === 'chloramine' || disinfectant === 'chlorine-dioxide' || disinfectant === 'ozone') {
-            validTemperatures = [1, 5, 10, 15, 20, 25]
-            validLogInactivations = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
-        }
-        else if (disinfectant === 'free-chlorine') {
-            validTemperatures = [0.5, 5.0, 10.0, 15.0, 20.0, 25.0]
-            validLogInactivations = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
-            const validPhs = [6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0]
-            const validConcentrations = [0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0]
-            if (!validPhs.includes(ph))
-                validationErrors.ph = { invalidValue: ph, validValues: validPhs }
-            if (!validConcentrations.includes(concentration))
-                validationErrors.concentration = { invalidValue: concentration, validValues: validConcentrations }
-        }
-        else validationErrors.disinfectant = { invalidValue: disinfectant, validValues: validDisinfectants }
-    }
-
-    else if (pathogen === 'virus') {
-        validLogInactivations = [2, 3, 4]
-        if (disinfectant === 'chloramine' || disinfectant === 'free-chlorine')
-            validTemperatures = [0, 5, 10, 15, 20, 25] // TODO DOUBLE CHECK VALUES
-        else if (disinfectant === 'chlorine-dioxide' || disinfectant === 'ozone')
-            validTemperatures = [1, 5, 10, 15, 20, 25]
-        else validationErrors.disinfectant = { invalidValue: disinfectant, validValues: validDisinfectants }
-    }
-    else validationErrors.pathogen = { invalidValue: pathogen, validValues: validPathogens }
-
-    // if no pathogen or disinfectant errors
-    if (!(pathogen in validationErrors || disinfectant in validationErrors)) {
-        if (!validTemperatures.includes(temperature))
-            validationErrors.temperature = { invalidValue: temperature, validValues: validTemperatures }
-        if (!validLogInactivations.includes(logInactivation))
-            validationErrors.logInactivation = { invalidValue: logInactivation, validValues: validLogInactivations }
-    }
+    const validationErrors = validate(disinfectant, pathogen, temperature, logInactivation)
 
     /* if no validation errors run sql */
-    if (Object.keys(validationErrors).length === 0) {
-        const sql = `SELECT inactivation FROM ${pathogen}.${disinfectant.replace('-', '_')} WHERE temperature = ${temperature} AND log_inactivation = ${logInactivation};`;
+    if (validationErrors.length === 0) {
+        const { validTemperatures } = getValidInputs(disinfectant, pathogen)
+        const [temperatureLow, temperatureHigh] = interpolationBounds(temperature, validTemperatures)
+        const sql = `SELECT inactivation FROM ${disinfectant}.${pathogen} WHERE temperature = ${temperatureLow} AND log_inactivation = ${logInactivation};`
+            + `SELECT inactivation FROM ${disinfectant}.${pathogen} WHERE temperature = ${temperatureHigh} AND log_inactivation = ${logInactivation};`;
         (async () => {
             try {
-                const dbRes = await pool.query(sql)
-                // await pool.end() // TODO where should this be handled?
-                apiRes.status(200).send(dbRes.rows[0])
+                const dbRes = await pool.query(sql);
+                const inactivationLow = Number(dbRes[0].rows[0].inactivation)
+                const inactivationHigh = Number(dbRes[1].rows[0].inactivation)
+                const inactivation = interpolate(temperatureLow, temperature, temperatureHigh, inactivationLow, inactivationHigh)
+                apiRes.status(200).send({ inactivation })
             } catch (err) {
                 console.log(err)
             }
         })()
     } else {
-        apiRes.status(422).send(validationErrors)
+        apiRes.status(400).send(validationErrors)
     }
 })
 

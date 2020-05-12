@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Calculator from '../calculator/Calculator'
 import './App.scss';
 
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div id="App">
-      <header style={{ backgroundColor: 'lightgrey' }}>header</header>
+      <header style={{ backgroundColor: '#e3e3e3', padding: '10px 30px' }}>CT Calc</header>
       <main>
         <Calculator
           disinfectantType={disinfectantType}
