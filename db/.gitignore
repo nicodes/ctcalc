@@ -1,4 +1,2 @@
-.env*
-pgdata/*
-dumps/*
-dumps/!schema.sql.zip
+pgdata
+dump*

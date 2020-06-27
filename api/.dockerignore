@@ -1,9 +1,9 @@
 # artifacts
-build
 node_modules
 
 # misc
-Dockerfile
+.env*
+Dockerfile*
 .dockerignore
 .gitignore
 README.md
