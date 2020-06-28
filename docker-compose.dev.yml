@@ -21,8 +21,8 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./api/:/usr/src/app/
-      - /usr/src/app/node_modules/
+      - ./api/:/app/
+      - /app/node_modules/
   client:
     depends_on:
       - api
@@ -35,6 +35,6 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./client/:/usr/src/app/
-      - /usr/src/app/node_modules/
+      - ./client/:/app/
+      - /app/node_modules/
   

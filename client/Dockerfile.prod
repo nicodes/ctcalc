@@ -2,7 +2,7 @@ FROM node:13
 
 WORKDIR /app/
 
-COPY package*.json ./
+COPY ./ ./
 RUN npm i
 
-CMD npm run start
+CMD npm run build

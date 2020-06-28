@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:11
     env_file:
-      - .env.prod.db
+      - .env.db
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata/
     ports:
@@ -15,8 +15,7 @@ services:
     depends_on:
       - db
     env_file:
-      - .env.prod.api
-      # - ./api/.env.prod # local testing
+      - .env.api
     ports:
       - 8080:8080
   server:
