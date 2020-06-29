@@ -1,0 +1,85 @@
+version: 2.1
+jobs:
+  update_docker_compose: # TODO only run this when docker-compose.prod.yml is updated
+    machine: # TODO what's most light-weight option?
+      image: ubuntu-1604:201903-01
+    steps:
+    - checkout
+    - add_ssh_keys:
+        fingerprints:
+        - $SERVER_FINGERPRINT
+    - run:
+        name: Copy docker-compose.yml to Droplet
+        command: scp docker-compose.prod.yml $SERVER_USR@$SERVER_URL:~/app
+  build_and_publish_api:
+    docker:
+    - image: circleci/buildpack-deps:stretch
+    steps:
+    - checkout
+    - setup_remote_docker
+    - run:
+        name: Build Docker Image
+        command: docker build -f api/Dockerfile.prod -t $DOCKERHUB_API_REPO api
+    - run:
+        name: Publish Docker Image to Docker Hub
+        command: |
+          echo "$DOCKERHUB_PWD" | docker login -u $DOCKERHUB_USR --password-stdin
+          docker push $DOCKERHUB_API_REPO
+  build_and_deploy_client:
+    docker:
+    - image: circleci/node
+    steps:
+    - checkout
+    - setup_remote_docker
+    - run:
+        name: Install Dependencies
+        command: |
+          cd client
+          npm i
+    - run:
+        name: Build Client
+        command: |
+          cd client
+          npm run build
+    - run:
+        name: Add URL to known_hosts
+        command: ssh-keyscan -H $SERVER_URL >> ~/.ssh/known_hosts
+    - add_ssh_keys:
+        fingerprints:
+        - $SERVER_FINGERPRINT
+    - run: # TODO not sure if this is needed?
+        name: Remove Outdated Build from Droplet
+        command: ssh $SERVER_USR@$SERVER_URL rm -rf ~/app/build
+    - run:
+        name: Copy Build to Droplet
+        command: scp -r client/build $SERVER_USR@$SERVER_URL:~/app
+  restart_containers:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+    - add_ssh_keys:
+        fingerprints:
+        - $SERVER_FINGERPRINT
+    - run:
+        name: Stop Running Containers
+        command: ssh $SERVER_USR@$SERVER_URL "docker-compose -f ~/app/docker-compose.prod.yml down -v"
+        # TODO set env vars here before run, no need to pass a file around
+    - run:
+        name: Restart Containers
+        command: ssh $SERVER_USR@$SERVER_URL "docker-compose -f ~/app/docker-compose.prod.yml up -d --build"
+workflows:
+  version: 2.1
+  build:
+    jobs:
+    - update_docker_compose:
+        context: nicodes
+    - build_and_publish_api:
+        context: nicodes
+    - build_and_deploy_client:
+        context: nicodes
+    - restart_containers:
+        context: nicodes
+        requires:
+        - update_docker_compose
+        - build_and_publish_api
+        - build_and_deploy_client
