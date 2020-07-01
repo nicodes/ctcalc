@@ -4,6 +4,7 @@ import axios from 'axios'
 import Select from '../select/Select';
 import { disinfectantTypeOptions, logGiardiaOptions, logVirusOptions } from './calculator.util';
 import './calculator.scss';
+// const apiUrl = `http://${process.env.SERVER_URL}:${process.env.API_PORT}`
 const apiUrl = process.env.REACT_APP_API_URL
 
 function Calculator({
@@ -65,7 +66,7 @@ function Calculator({
             border: 'solid 2px #faf2cc',
             color: '#8a6d3b'
         }}>WARNING: this site is under development and should only be used for testing</div>
-        <h1>Calculator</h1>
+        <h1>Calculator - test</h1>
         <form>
             <span>Disinfectant Type:</span>
             <Select options={disinfectantTypeOptions}
