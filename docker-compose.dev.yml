@@ -3,38 +3,36 @@ services:
   db:
     image: postgres:11
     env_file:
-      - ./db/.env.dev
-    environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata/
+      - .env.dev
     ports:
       - 5432:5432
     volumes:
-      - ./db/pgdata/:/var/lib/postgresql/data/pgdata/
+      - ./db/data:/var/lib/postgresql/data
   api:
     depends_on:
       - db
     build:
-      context: ./api/
+      context: ./api
       dockerfile: Dockerfile.dev
     env_file:
-      - ./api/.env.dev
+      - .env.dev
     ports:
       - 8080:8080
     volumes:
-      - ./api/:/app/
-      - /app/node_modules/
+      - ./api:/app
+      - /app/node_modules
   client:
     depends_on:
       - api
     build:
-      context: ./client/
+      context: ./client
       dockerfile: Dockerfile.dev
+    environment:
+      - PORT=80
     stdin_open: true
-    env_file:
-      - ./client/.env.dev
     ports:
       - 80:80
     volumes:
-      - ./client/:/app/
-      - /app/node_modules/
+      - ./client:/app
+      - /app/node_modules
   

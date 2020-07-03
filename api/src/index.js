@@ -6,29 +6,19 @@ const fs = require('fs');
 const { interpolationBounds, interpolate } = require('./utils')
 const { validate, getValidInputs } = require('./validate')
 
-const {
-    NODE_ENV,
-    HOST,
-    PORT,
-    DB_HOST,
-    DB_PORT,
-    DB_NAME,
-    DB_USER,
-    DB_PWD
-} = process.env
-
 const app = express()
 app.use(cors())
 
+const port = 8080
 const dbConfig = {
-    host: DB_HOST,
-    port: DB_PORT,
-    database: DB_NAME,
-    user: DB_USER,
-    password: DB_PWD
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USR_API,
+    password: process.env.DB_PWD_API
 }
 const pool = new Pool(
-    //     NODE_ENV === 'prod' ? {
+    //     ENV === 'prod' ? {
     //     ...dbConfig, ssl: {
     //         rejectUnauthorized: false,
     //         ca: fs.readFileSync('certs/ca-certificate.crt').toString()
@@ -78,4 +68,4 @@ app.get('*', function (req, res) {
     res.status(404).send('Not found');
 });
 
-app.listen(PORT, () => console.log(`API listening on http://${HOST}:${PORT}`))
+app.listen(port, () => console.log(`ctcalc API running`))
