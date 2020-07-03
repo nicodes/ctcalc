@@ -2,20 +2,14 @@ version: "3"
 services:
   db:
     image: postgres:11
-    env_file:
-      - .env.db
-    environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata/
     ports:
       - 5432:5432
     volumes:
-      - /root/app/pgdata/:/var/lib/postgresql/data/pgdata/
+      - ./data:/var/lib/postgresql/data
   api:
     image: nicodes/ctcalc-api
     depends_on:
       - db
-    env_file:
-      - .env.api
     ports:
       - 8080:8080
   server:
@@ -25,7 +19,5 @@ services:
     ports:
       - 80:80
     volumes:
+      - ./build:/usr/share/nginx/html
       # - ./nginx.conf:/etc/nginx/nginx.conf # TODO get reverse proxy working
-      - /root/app/build/:/usr/share/nginx/html/
-      # - ./client/build/:/usr/share/nginx/html/ # local testing
-    
