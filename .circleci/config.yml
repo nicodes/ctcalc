@@ -1,5 +1,13 @@
 version: 2.1
+orbs:
+  slack: circleci/slack@3.4.2
 jobs:
+  notify_start:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+    - slack/notify:
+        message: "Starting ctcalc deploy"
   update_docker_compose: # TODO only run this when docker-compose.prod.yml is updated
     machine: # TODO what's most light-weight option?
       image: ubuntu-1604:201903-01
@@ -47,7 +55,7 @@ jobs:
     - add_ssh_keys:
         fingerprints:
         - $SERVER_FINGERPRINT
-    - run: # TODO not sure if this is needed?
+    - run:
         name: Remove Outdated Build from Droplet
         command: ssh $SERVER_USR@$SERVER_URL rm -rf ~/app/build
     - run:
@@ -63,20 +71,33 @@ jobs:
     - run:
         name: Stop Running Containers
         command: ssh $SERVER_USR@$SERVER_URL "docker-compose -f ~/app/docker-compose.prod.yml down -v"
-        # TODO set env vars here before run, no need to pass a file around
     - run:
-        name: Restart Containers
+        name: Start Fresh Containers
         command: ssh $SERVER_USR@$SERVER_URL "docker-compose -f ~/app/docker-compose.prod.yml up -d --build"
+    - slack/notify:
+        message: "Finished ctcalc deploy"
 workflows:
   version: 2.1
-  build:
+  deploy_prod:
     jobs:
+    - notify_start:
+        context: nicodes
+        filters:
+          branches:
+            only:
+            - master
     - update_docker_compose:
         context: nicodes
+        requires:
+        - notify_start
     - build_and_publish_api:
         context: nicodes
+        requires:
+        - notify_start
     - build_and_deploy_client:
         context: nicodes
+        requires:
+        - notify_start
     - restart_containers:
         context: nicodes
         requires:
