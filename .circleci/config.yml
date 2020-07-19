@@ -69,11 +69,13 @@ jobs:
         fingerprints:
         - $SERVER_FINGERPRINT
     - run:
-        name: Stop Running Containers
-        command: ssh $SERVER_USR@$SERVER_URL "docker-compose -f ~/app/docker-compose.prod.yml down -v"
-    - run:
-        name: Start Fresh Containers
-        command: ssh $SERVER_USR@$SERVER_URL "docker-compose -f ~/app/docker-compose.prod.yml up -d --build"
+        name: Stop, Pull, Restart Running Containers
+        command: >
+          ssh $SERVER_USR@$SERVER_URL " 
+            docker-compose -f ~/app/docker-compose.prod.yml down -v
+            docker-compose -f ~/app/docker-compose.prod.yml pull api
+            docker-compose -f ~/app/docker-compose.prod.yml up -d --build
+          "
     - slack/notify:
         message: "Finished ctcalc deploy"
 workflows:
