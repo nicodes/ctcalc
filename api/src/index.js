@@ -27,6 +27,7 @@ const pool = new Pool(
     dbConfig)
 
 app.get('/valid-values', (req, res) => {
+    console.log('GET /valid-values')
     res.status(200).send(validValues);
 })
 
@@ -65,7 +66,7 @@ app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
 })
 
 app.get('/test', function (req, res) {
-    res.status(200).send('test');
+    res.status(200).send('test ctcalc api');
 });
 
 app.get('*', function (req, res) {
