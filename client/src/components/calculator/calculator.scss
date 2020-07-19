@@ -28,19 +28,35 @@
             white-space: nowrap;
         }
 
-        input, select {
+        input[type='number'], select {
             border: 1px solid $grey;
             border-radius: 5px;
         }
-        input {
+        input[type='number'] {
             height: 20px;
             padding: 1px 8px 1px 8px;
         }
         select {
             height: 24px;
         }
+        input[type='checkbox'] {
+            margin: 0 10px 0 0;
+        }
 
-        .button-wrap {
+        .label-container {
+            display: flex;
+            align-items: center;
+
+            img {
+                margin-right: 5px;
+            }
+
+            .kebab {
+                text-decoration: line-through;  
+            }
+        }
+
+        .buttons-container {
             display: flex;
             justify-content: flex-end;
 

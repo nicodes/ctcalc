@@ -4,7 +4,7 @@ const { Pool } = require('pg')
 const fs = require('fs');
 
 const { interpolationBounds, interpolate } = require('./utils')
-const { validate, getValidInputs } = require('./validate')
+const { validate, validValues } = require('./validate')
 
 const app = express()
 app.use(cors())
@@ -26,11 +26,15 @@ const pool = new Pool(
     // } : 
     dbConfig)
 
+app.get('/valid-values', (req, res) => {
+    res.status(200).send(validValues);
+})
+
 app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
     console.log(`GET /${apiReq.params.disinfectant}/${apiReq.params.pathogen}`, apiReq.query)
 
-    const disinfectant = apiReq.params.disinfectant.replace('-', '_')
-    const { pathogen } = apiReq.params
+    // const disinfectant = apiReq.params.disinfectant.replace('_', '-')
+    const { disinfectant, pathogen } = apiReq.params
     const temperature = Number(apiReq.query.temperature)
     const logInactivation = Number(apiReq.query['log-inactivation'])
     // const ph = Number(apiReq.query.ph)
@@ -39,8 +43,8 @@ app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
     const validationErrors = validate(disinfectant, pathogen, temperature, logInactivation)
 
     /* if no validation errors run sql */
-    if (validationErrors.length === 0) {
-        const { validTemperatures } = getValidInputs(disinfectant, pathogen)
+    if (Object.keys(validationErrors).length === 0) {
+        const validTemperatures = validValues.validTemperatures[disinfectant][pathogen]
         const [temperatureLow, temperatureHigh] = interpolationBounds(temperature, validTemperatures)
         const sql = `SELECT inactivation FROM ${disinfectant}.${pathogen} WHERE temperature = ${temperatureLow} AND log_inactivation = ${logInactivation};`
             + `SELECT inactivation FROM ${disinfectant}.${pathogen} WHERE temperature = ${temperatureHigh} AND log_inactivation = ${logInactivation};`;
