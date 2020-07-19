@@ -32,7 +32,7 @@ function Calculator({
     setVirusResult
 }) {
     const [serverErrors, setServerErrors] = useState([])
-    const [uiErrors, setUiErrors] = useState({})
+    const [uiErrors] = useState({}) /* setUiErrors */
     console.log(serverErrors)
 
     /* handle submit button click */
@@ -83,8 +83,8 @@ function Calculator({
     }
 
     function renderLabel(label, err) {
-        return (<div class='label-container'>
-            {err && <img src={errorSvg} />}
+        return (<div className='label-container'>
+            {err && <img src={errorSvg} alt='error' />}
             <span>{label}:</span>
         </div>)
     }
@@ -117,13 +117,13 @@ function Calculator({
             <input type='number' step='0.01' min='0' value={temperature} onChange={e => setTempterature(e.target.value)} />
 
             {/* giardia */}
-            <div class='label-container'>
-                {<img src={errorSvg} />}
+            <div className='label-container'>
+                {<img src={errorSvg} alt='error' />}
                 <input type="checkbox" checked={giardiaActive} onChange={() => {
                     giardiaActive === true && setLogGiardia('')
                     setGiardiaActive(!giardiaActive)
                 }} />
-                <span class={giardiaActive ? null : 'kebab'}>Logs of Giardia Inactivation:</span>
+                <span className={giardiaActive ? null : 'kebab'}>Logs of Giardia Inactivation:</span>
             </div>
             <Select options={logGiardiaOptions}
                 value={logGiardia}
@@ -132,13 +132,13 @@ function Calculator({
             />
 
             {/* virus */}
-            <div class='label-container'>
-                {<img src={errorSvg} />}
+            <div className='label-container'>
+                {<img src={errorSvg} alt='error' />}
                 <input type="checkbox" checked={virusActive} onChange={() => {
                     virusActive === true && setLogVirus('')
                     setVirusActive(!virusActive)
                 }} />
-                <span class={virusActive ? null : 'kebab'}>Logs of Virus Inactivation:</span>
+                <span className={virusActive ? null : 'kebab'}>Logs of Virus Inactivation:</span>
             </div>
             <Select options={logVirusOptions}
                 value={logVirus}
