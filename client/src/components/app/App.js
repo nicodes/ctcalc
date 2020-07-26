@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Calculator from '../calculator/Calculator'
 import './App.scss';
 
