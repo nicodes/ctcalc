@@ -15,7 +15,7 @@ export const concentrationOptions = Array(14).fill().map((e, i) => {
     return { value: v, label: v }
 })
 
-export const giardiaLogOptions = new Array(6).fill().map((e, i) => {
+export const giardiaLogOptions = Array(6).fill().map((e, i) => {
     const v = ((i + 1) * 0.5).toFixed(1)
     return { value: v, label: v }
 })

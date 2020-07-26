@@ -4,7 +4,7 @@ const { Pool } = require('pg')
 const fs = require('fs');
 
 const { interpolate } = require('./utils')
-const { validations, validate } = require('./validate')
+const validate = require('./validate');
 
 const app = express()
 app.use(cors())
@@ -17,19 +17,7 @@ const dbConfig = {
     user: process.env.DB_USR_API,
     password: process.env.DB_PWD_API
 }
-const pool = new Pool(
-    //     ENV === 'prod' ? {
-    //     ...dbConfig, ssl: {
-    //         rejectUnauthorized: false,
-    //         ca: fs.readFileSync('certs/ca-certificate.crt').toString()
-    //     }
-    // } : 
-    dbConfig)
-
-app.get('/valid-values', (req, res) => {
-    console.log('GET /valid-values')
-    res.status(200).send(validations);
-})
+const pool = new Pool(dbConfig)
 
 app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
     console.log(`GET /${apiReq.params.disinfectant}/${apiReq.params.pathogen}`, apiReq.query)
@@ -40,7 +28,7 @@ app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
     const ph = apiReq.query.ph
     const concentration = apiReq.query.concentration
 
-    const validationErrors = validate(disinfectant, pathogen, temperature, inactivationLog)
+    const validationErrors = validate(disinfectant, pathogen, temperature, inactivationLog, ph, concentration)
 
     if (Object.keys(validationErrors).length !== 0) {
         apiRes.status(400).send(validationErrors)

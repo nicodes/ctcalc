@@ -1,97 +1,40 @@
+const disinfectantOptions = ['chloramine', 'chlorine-dioxide', 'free-chlorine', 'ozone']
+const pathogenOptions = ['giardia', 'virus']
+const phOptions = Array(7).fill().map((e, i) => ((i * 0.5) + 6).toFixed(1))
+const concentrationOptions = Array(14).fill().map((e, i) => ((i * 0.2) + 0.4).toFixed(1))
+const giardiaLogOptions = Array(6).fill().map((e, i) => ((i + 1) * 0.5).toFixed(1))
+const virusLogOptions = Array(3).fill().map((e, i) => (i + 2).toFixed(1))
 
-const validations = {
-    meta: {
-        disinfectants: ['chloramine', 'chlorine-dioxide', 'free-chlorine', 'ozone'],
-        pathogens: ['giardia', 'virus']
-    },
-    chloramine: {
-        giardia: {
-            temperatures: {
-                min: 1,
-                max: 25
-            },
-            inactivationLogs: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
-        },
-        virus: {
-            temperatures: {
-                min: 1,
-                max: 25
-            },
-            inactivationLogs: [2, 3, 4]
-        }
-    },
-    'chlorine-dioxide': {
-        giardia: {
-            temperatures: {
-                min: 1,
-                max: 25
-            },
-            inactivationLogs: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
-        },
-        virus: {
-            temperatures: {
-                min: 1,
-                max: 25
-            },
-            inactivationLogs: [2, 3, 4]
-        }
-    },
-    'free-chlorine': {
-        giardia: {
-            temperatures: {
-                min: 0.5,
-                max: 25
-            },
-            inactivationLogs: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
-        },
-        virus: {
-            temperatures: {
-                min: 0.5,
-                max: 25
-            },
-            inactivationLogs: [2, 3, 4]
-        }
-    },
-    ozone: {
-        giardia: {
-            temperatures: {
-                min: 1,
-                max: 25
-            },
-            inactivationLogs: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
-        },
-        virus: {
-            temperatures: {
-                min: 1,
-                max: 25
-            },
-            inactivationLogs: [2, 3, 4]
-        }
-    }
-}
-
-function validate(disinfectant, pathogen, temperature, inactivationLog) {
+function validate(disinfectant, pathogen, temperature, inactivationLog, ph, concentration) {
     const errors = {}
 
-    const validDisinfectants = validations.meta.disinfectants
-    if (!validDisinfectants.includes(disinfectant)) errors.disinfectant = `Invalid value: ${disinfectant}. Acceptable values: ${validDisinfectants}`
+    if (!disinfectantOptions.includes(disinfectant))
+        errors.disinfectant = `Invalid value: ${disinfectant}. Acceptable values: ${disinfectantOptions}`
 
-    const validPathogens = validations.meta.pathogens
-    if (!validPathogens.includes(pathogen)) errors.pathogen = `Invalid value: ${pathogen}. Acceptable values: ${validPathogens}`
+    if (!pathogenOptions.includes(pathogen))
+        errors.pathogen = `Invalid value: ${pathogen}. Acceptable values: ${pathogenOptions}`
 
     if (Object.keys(errors).length === 0) {
-        const { min, max } = validations[disinfectant][pathogen].temperatures
-        if (temperature < min || max < temperature)
-            errors.temperature = `Invalid value: ${pathogen}. Acceptable values range ${min}-${max}`
+        const isFreeChlorine = disinfectant === 'free-chlorine'
+        const isGiardia = pathogen === 'giardia'
 
-        const validInactivationLogs = validations[disinfectant][pathogen].inactivationLogs
-        if (!validInactivationLogs.includes(inactivationLog))
-            errors.inactivationLog = `Invalid value: ${inactivationLog}. Acceptable values: ${validInactivationLogs}`
+        if (temperature < 0 || 25 < temperature)
+            errors.temperature = `Invalid value: ${temperature}. Acceptable values: [0 - 25]`
+
+        const o = isGiardia ? giardiaLogOptions : virusLogOptions
+        if (!o.includes(inactivationLog))
+            errors.inactivationLog = `Invalid value: ${inactivationLog}. Acceptable values: ${o}`
+
+        if (isFreeChlorine && isGiardia) {
+            if (!phOptions.includes(ph))
+                errors.ph = `Invalid value: ${ph}. Acceptable values: ${phOptions}`
+
+            if (!concentrationOptions.includes(concentration))
+                errors.concentration = `Invalid value: ${concentration}. Acceptable values: ${concentrationOptions}`
+        }
     }
     return errors;
 }
 
-module.exports = {
-    validations,
-    validate
-}
+module.exports = validate
+
