@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import Select from '../select/Select';
 import errorSvg from '../../images/error_outline.svg'
-import { disinfectantOptions, logGiardiaOptions, logVirusOptions } from './calculator.util';
+import { disinfectantOptions, phOptions, concentrationOptions, giardiaLogOptions, virusLogOptions } from './calculator.util';
 import './calculator.scss';
 
 // const apiUrl = `http://${process.env.SERVER_URL}:${process.env.API_PORT}`
@@ -18,35 +18,36 @@ function Calculator() {
     const [disinfectant, setDisinfectant] = useState('')
     const [temperature, setTempterature] = useState('')
     const [temperatureError, setTempteratureError] = useState(false)
+    const [ph, setPh] = useState('')
+    const [concentration, setConcentration] = useState('')
     const [giardiaActive, setGiardiaActive] = useState(true)
-    const [logGiardia, setLogGiardia] = useState('')
+    const [giardiaLog, setGiardiaLog] = useState('')
     const [virusActive, setVirusActive] = useState(true)
-    const [logVirus, setLogVirus] = useState('')
+    const [virusLog, setVirusLog] = useState('')
 
-    const freeChlorineBool = disinfectant === 'free-chlorine'
-    const validateTemperature = function (t, d) {
+    const isFreeChlorine = disinfectant === 'free-chlorine'
+    const validateTemperature = function (t, ifc = isFreeChlorine) {
         setTempteratureError(
-            t < (d === 'free-chlorine' ? 0.5 : 1)
+            t < (ifc ? 0.5 : 1)
             || 25 < t
         )
     }
 
-    /* handle submit button click */
     function submit() {
         (async () => {
-            const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${logGiardia}`
-            const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${logVirus}`
+            const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
+                + `${isFreeChlorine ? `&ph=${ph}&concentration=${concentration}` : ''}`
+            const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`
             const urls = []
             giardiaActive && urls.push(giardiaUrl)
             virusActive && urls.push(virusUrl)
             try {
                 const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
                 setServerErrors([])
-                setGiardiaResult(giardiaRes.data)
-                setVirusResult(virusRes.data)
+                setGiardiaResult(giardiaRes ? giardiaRes.data : undefined)
+                setVirusResult(virusRes ? virusRes.data : undefined)
             } catch (error) {
                 const { response } = error
-                console.log(response)
                 if (response.status === 400) {
                     setServerErrors(response.data)
                 }
@@ -54,14 +55,13 @@ function Calculator() {
         })()
     }
 
-    /* handle clear button click */
     function clear() {
         setGiardiaActive(true)
         setVirusActive(true)
         setDisinfectant('')
         setTempterature('')
-        setLogGiardia('')
-        setLogVirus('')
+        setGiardiaLog('')
+        setVirusLog('')
     }
 
     return (<div className={'calculator'}>
@@ -75,72 +75,107 @@ function Calculator() {
         }}>WARNING: this site is under development and should only be used for testing</div>
         <h1>Calculator - test</h1>
         <form>
-            {/* disinfectant */}
             <div className='label-container'>
                 <span>Disinfectant Type:</span>
             </div>
-            <Select options={disinfectantOptions}
+            <Select
+                options={disinfectantOptions}
                 value={disinfectant}
                 onChange={value => {
-                    validateTemperature(temperature, value)
+                    const isFreeChlorine = value === 'free-chlorine'
+                    validateTemperature(temperature, isFreeChlorine)
                     setDisinfectant(value)
-                }} />
+                    if (isFreeChlorine) {
+                        setPh('')
+                        setConcentration('')
+                    }
+                }}
+            />
 
-            {/* temperature */}
             <div className='label-container'>
                 {temperatureError && <img src={errorSvg} alt='error' />}
                 <span>Temperature (°C):</span>
             </div>
-            <input type='number' step='0.01' min={freeChlorineBool ? 0.5 : 1} value={temperature} onChange={({ target: { value } }) => {
-                validateTemperature(value, disinfectant)
-                setTempterature(value)
-            }} />
+            <input
+                type='number'
+                step='0.01'
+                min={isFreeChlorine ? 0.5 : 1}
+                value={temperature}
+                onChange={({ target: { value } }) => {
+                    validateTemperature(value)
+                    setTempterature(value)
+                }}
+            />
 
-            {/* giardia */}
+            {isFreeChlorine && <>
+                <div className='label-container'>
+                    <span>pH:</span>
+                </div>
+                <Select
+                    options={phOptions}
+                    value={ph}
+                    onChange={setPh}
+                />
+
+                <div className='label-container'>
+                    <span>Concentration (mg/L):</span>
+                </div>
+                <Select
+                    options={concentrationOptions}
+                    value={concentration}
+                    onChange={setConcentration}
+                />
+            </>}
+
             <div className='label-container'>
-                <input type="checkbox" checked={giardiaActive} onChange={() => {
-                    giardiaActive === true && setLogGiardia('')
-                    setGiardiaActive(!giardiaActive)
-                }} />
+                <input
+                    type="checkbox"
+                    checked={giardiaActive}
+                    onChange={() => {
+                        giardiaActive === true && setGiardiaLog('')
+                        setGiardiaActive(!giardiaActive)
+                    }}
+                />
                 <span className={giardiaActive ? null : 'kebab'}>Logs of Giardia Inactivation:</span>
             </div>
-            <Select options={logGiardiaOptions}
-                value={logGiardia}
-                onChange={setLogGiardia}
+            <Select
+                options={giardiaLogOptions}
+                value={giardiaLog}
+                onChange={setGiardiaLog}
                 disabled={!giardiaActive}
             />
 
-            {/* virus */}
             <div className='label-container'>
-                <input type="checkbox" checked={virusActive} onChange={() => {
-                    virusActive === true && setLogVirus('')
-                    setVirusActive(!virusActive)
-                }} />
+                <input
+                    type="checkbox"
+                    checked={virusActive}
+                    onChange={() => {
+                        virusActive === true && setVirusLog('')
+                        setVirusActive(!virusActive)
+                    }}
+                />
                 <span className={virusActive ? null : 'kebab'}>Logs of Virus Inactivation:</span>
             </div>
-            <Select options={logVirusOptions}
-                value={logVirus}
-                onChange={setLogVirus}
+            <Select
+                options={virusLogOptions}
+                value={virusLog}
+                onChange={setVirusLog}
                 disabled={!virusActive}
             />
 
-            {/* buttons */}
             <div /> {/* skip grid area */}
             <div className={'buttons-container'}>
                 <button type='button' className={'submit'} onClick={submit} disabled={temperatureError}>Submit</button>
                 <button type='button' className={'clear'} onClick={clear}>Clear</button>
             </div>
 
-            {/* results */}
-            {serverErrors.length === 0
-                && (giardiaResult || virusResult) && <>
-                    <div style={{ backgroundColor: '#e3e3e3', 'height': '3px', 'grid-column': `span 2` }} />
-                    {[['Giardia', giardiaResult], ['Virus', virusResult]].map(([label, result]) => <>
-                        <span style={{ justifySelf: 'right' }}>{label} Inactivation:</span>
-                        <span>{JSON.stringify(result)}</span>
-                    </>)}
-                </>
-            }
+            {serverErrors.length === 0 && <>
+                <div style={{ backgroundColor: '#e3e3e3', 'height': '3px', 'grid-column': `span 2` }} />
+                {[['Giardia', giardiaResult], ['Virus', virusResult]].map(([label, result]) => result && <>
+                    <span style={{ justifySelf: 'right' }}>{label} Inactivation:</span>
+                    <span>{JSON.stringify(result)}</span>
+                </>)}
+            </>}
         </form>
     </div>);
 }

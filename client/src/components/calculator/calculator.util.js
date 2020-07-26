@@ -5,17 +5,22 @@ export const disinfectantOptions = [
     { value: 'ozone', label: 'Ozone' },
 ]
 
-export const logGiardiaOptions = [
-    { value: 0.5, label: '0.5' },
-    { value: 1.0, label: '1.0' },
-    { value: 1.5, label: '1.5' },
-    { value: 2.0, label: '2.0' },
-    { value: 2.5, label: '2.5' },
-    { value: 3.0, label: '3.0' },
-]
+export const phOptions = Array(7).fill().map((e, i) => {
+    const v = (i * 0.5) + 6
+    return { value: v, label: v.toFixed(1) }
+})
 
-export const logVirusOptions = [
-    { value: 2.0, label: '2.0' },
-    { value: 3.0, label: '3.0' },
-    { value: 4.0, label: '4.0' },
-]
+export const concentrationOptions = Array(14).fill().map((e, i) => {
+    const v = (i * 0.2) + 0.4
+    return { value: v, label: v.toFixed(1) }
+})
+
+export const giardiaLogOptions = new Array(6).fill().map((e, i) => {
+    const v = (i + 1) * 0.5
+    return { value: v, label: v.toFixed(1) }
+})
+
+export const virusLogOptions = Array(3).fill().map((e, i) => {
+    const v = i + 2
+    return { value: v, label: v.toFixed(1) }
+})
