@@ -28,7 +28,7 @@ function Calculator() {
     const isFreeChlorine = disinfectant === 'free-chlorine'
     const validateTemperature = function (t, ifc = isFreeChlorine) {
         setTempteratureError(
-            t < (ifc ? 0.5 : 1)
+            t <= 0
             || 25 < t
         )
     }
@@ -99,7 +99,7 @@ function Calculator() {
             <input
                 type='number'
                 step='0.01'
-                min={isFreeChlorine ? 0.5 : 1}
+                min={0.0000001}
                 value={temperature}
                 onChange={({ target: { value } }) => {
                     validateTemperature(value)

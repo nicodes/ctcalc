@@ -36,20 +36,26 @@ app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
         const isFreeChlorine = disinfectant === 'free-chlorine'
         const sanitizedDisinfectant = disinfectant.replace('-', '_')
 
+        const temperatureMin = isFreeChlorine ? 0.5 : 1
+        const isInterpolate = (temperatureMin < temperature)
+            && ((temperature % (isFreeChlorine ? 5 : 1)) !== 0);
+
         const [temperatureHigh, temperatureLow] = (() => {
-            const [min, c, f] = (() => isFreeChlorine
-                ? [0.5, Math.ceil(temperature / 5) * 5, Math.floor(temperature / 5) * 5]
-                : [1, Math.ceil(temperature), Math.floor(temperature)])()
-            return [c < min ? min : c, f < min ? min : f]
+            if (!isInterpolate) return []
+            const [c, f] = (() => isFreeChlorine
+                ? [Math.ceil(temperature / 5) * 5, Math.floor(temperature / 5) * 5]
+                : [Math.ceil(temperature), Math.floor(temperature)])()
+            return [c, f]
         })()
-        const isInterpolate = temperatureHigh !== temperatureLow
 
         const sql = (() => {
-            const a = isInterpolate ? [temperatureHigh, temperatureLow] : [temperature]
+            const a = isInterpolate
+                ? [temperatureHigh, temperatureLow]
+                : [temperature]
             return a.map(t =>
                 `SELECT inactivation FROM ${sanitizedDisinfectant}.${pathogen}`
-                + ` WHERE temperature=${t} AND inactivation_log=${inactivationLog}`
-                + `${isFreeChlorine && pathogen === 'giardia' ? ` AND ph=${ph} AND concentration=${concentration}` : ''}`
+                + ` WHERE temperature=${t < temperatureMin ? temperatureMin : t} AND inactivation_log = ${inactivationLog}`
+                + `${isFreeChlorine && pathogen === 'giardia' ? ` AND ph=${ph} AND concentration=${concentration}` : ''} `
                 + ';'
             ).join('')
         })();
