@@ -35,10 +35,10 @@ app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
     console.log(`GET /${apiReq.params.disinfectant}/${apiReq.params.pathogen}`, apiReq.query)
 
     const { disinfectant, pathogen } = apiReq.params
-    const temperature = Number(apiReq.query.temperature)
-    const inactivationLog = Number(apiReq.query['inactivation-log'])
-    const ph = Number(apiReq.query.ph)
-    const concentration = Number(apiReq.query.concentration)
+    const temperature = apiReq.query.temperature
+    const inactivationLog = apiReq.query['inactivation-log']
+    const ph = apiReq.query.ph
+    const concentration = apiReq.query.concentration
 
     const validationErrors = validate(disinfectant, pathogen, temperature, inactivationLog)
 
