@@ -1,3 +1,4 @@
-data
+pg_data*
+ingest/data
 ingest/*.sql
 dump*

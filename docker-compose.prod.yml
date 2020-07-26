@@ -7,7 +7,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql/data
   api:
     image: nicodes/ctcalc-api
     depends_on:

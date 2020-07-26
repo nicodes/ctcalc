@@ -67,6 +67,10 @@
                 &.submit {
                     color: $white;
                     background-color: $blue;
+
+                    &:disabled {
+                        background-color: $grey;
+                    }
                 }
                 &.clear {
                     margin-left: 10px;

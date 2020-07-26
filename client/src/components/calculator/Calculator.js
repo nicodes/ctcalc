@@ -5,58 +5,42 @@ import Select from '../select/Select';
 import errorSvg from '../../images/error_outline.svg'
 import { disinfectantOptions, logGiardiaOptions, logVirusOptions } from './calculator.util';
 import './calculator.scss';
+
 // const apiUrl = `http://${process.env.SERVER_URL}:${process.env.API_PORT}`
 const apiUrl = process.env.REACT_APP_API_URL
 
-function Calculator({
-    validValues,
-    disinfectant,
-    setDisinfectant,
-    disinfectantConcentration,
-    setDisinfectantConcentration,
-    time,
-    setTime,
-    temperature,
-    setTempterature,
-    giardiaActive,
-    setGiardiaActive,
-    logGiardia,
-    setLogGiardia,
-    virusActive,
-    setVirusActive,
-    logVirus,
-    setLogVirus,
-    giardiaResult,
-    setGiardiaResult,
-    virusResult,
-    setVirusResult
-}) {
-    const [serverErrors, setServerErrors] = useState([])
-    const [uiErrors] = useState({}) /* setUiErrors */
-    console.log(serverErrors)
+function Calculator() {
+    const [giardiaResult, setGiardiaResult] = useState()
+    const [virusResult, setVirusResult] = useState()
+    const [serverErrors, setServerErrors] = useState({})
+
+    // form inputs
+    const [disinfectant, setDisinfectant] = useState('')
+    const [temperature, setTempterature] = useState('')
+    const [temperatureError, setTempteratureError] = useState(false)
+    const [giardiaActive, setGiardiaActive] = useState(true)
+    const [logGiardia, setLogGiardia] = useState('')
+    const [virusActive, setVirusActive] = useState(true)
+    const [logVirus, setLogVirus] = useState('')
+
+    const freeChlorineBool = disinfectant === 'free-chlorine'
+    const validateTemperature = function (t, d) {
+        setTempteratureError(
+            t < (d === 'free-chlorine' ? 0.5 : 1)
+            || 25 < t
+        )
+    }
 
     /* handle submit button click */
     function submit() {
-        // {
-        //     const newUiErrors = {}
-        //     if (!validValues.validDisinfectants.contains(disinfectant))
-        //         newUiErrors.disinfectant = true
-        //     if (!validValues.validPathogens.contains(pathogen))
-        //         newUiErrors.pathogen = true
-        //     if (!validValues.validTemperatures[disinfectant][pathogen].contains(disinfectant))
-        //         newUiErrors.temperature = true
-        //     if (!validValues.ValidLogInactivations[disinfectant][pathogen].contains(pathogen))
-        //         newUiErrors.logInactivation = true
-        //     if (Object.keys(newUiErrors).length !== 0)
-        //         setUiErrors(newUiErrors)
-        // }
-
-
-        ; (async () => {
-            const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&log-inactivation=${logGiardia}`
-            const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&log-inactivation=${logVirus}`
+        (async () => {
+            const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${logGiardia}`
+            const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${logVirus}`
+            const urls = []
+            giardiaActive && urls.push(giardiaUrl)
+            virusActive && urls.push(virusUrl)
             try {
-                const [giardiaRes, virusRes] = await Promise.all([axios.get(giardiaUrl), axios.get(virusUrl)]);
+                const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
                 setServerErrors([])
                 setGiardiaResult(giardiaRes.data)
                 setVirusResult(virusRes.data)
@@ -75,18 +59,9 @@ function Calculator({
         setGiardiaActive(true)
         setVirusActive(true)
         setDisinfectant('')
-        setDisinfectantConcentration('')
-        setTime('')
         setTempterature('')
         setLogGiardia('')
         setLogVirus('')
-    }
-
-    function renderLabel(label, err) {
-        return (<div className='label-container'>
-            {err && <img src={errorSvg} alt='error' />}
-            <span>{label}:</span>
-        </div>)
     }
 
     return (<div className={'calculator'}>
@@ -101,24 +76,28 @@ function Calculator({
         <h1>Calculator - test</h1>
         <form>
             {/* disinfectant */}
-            {renderLabel('Disinfectant Type', uiErrors.disinfectant)}
+            <div className='label-container'>
+                <span>Disinfectant Type:</span>
+            </div>
             <Select options={disinfectantOptions}
                 value={disinfectant}
-                onChange={setDisinfectant} />
-
-            {/* <span>Disinfectant Concentration (mg/L):</span>
-            <input type='number' step='0.01' min='0' value={disinfectantConcentration} onChange={e => setDisinfectantConcentration(e.target.value)}></input>
-
-            <span>Time (Minutes):</ span>
-            <input type='number' step='0.01' min='0' value={time} onChange={e => setTime(e.target.value)}></input> */}
+                onChange={value => {
+                    validateTemperature(temperature, value)
+                    setDisinfectant(value)
+                }} />
 
             {/* temperature */}
-            {renderLabel('disinfectant', uiErrors.temperature)}
-            <input type='number' step='0.01' min='0' value={temperature} onChange={e => setTempterature(e.target.value)} />
+            <div className='label-container'>
+                {temperatureError && <img src={errorSvg} alt='error' />}
+                <span>Temperature (°C):</span>
+            </div>
+            <input type='number' step='0.01' min={freeChlorineBool ? 0.5 : 1} value={temperature} onChange={({ target: { value } }) => {
+                validateTemperature(value, disinfectant)
+                setTempterature(value)
+            }} />
 
             {/* giardia */}
             <div className='label-container'>
-                {<img src={errorSvg} alt='error' />}
                 <input type="checkbox" checked={giardiaActive} onChange={() => {
                     giardiaActive === true && setLogGiardia('')
                     setGiardiaActive(!giardiaActive)
@@ -133,7 +112,6 @@ function Calculator({
 
             {/* virus */}
             <div className='label-container'>
-                {<img src={errorSvg} alt='error' />}
                 <input type="checkbox" checked={virusActive} onChange={() => {
                     virusActive === true && setLogVirus('')
                     setVirusActive(!virusActive)
@@ -149,7 +127,7 @@ function Calculator({
             {/* buttons */}
             <div /> {/* skip grid area */}
             <div className={'buttons-container'}>
-                <button type='button' className={'submit'} onClick={submit}>Submit</button>
+                <button type='button' className={'submit'} onClick={submit} disabled={temperatureError}>Submit</button>
                 <button type='button' className={'clear'} onClick={clear}>Clear</button>
             </div>
 
@@ -164,7 +142,7 @@ function Calculator({
                 </>
             }
         </form>
-    </div >);
+    </div>);
 }
 
 export default Calculator;
