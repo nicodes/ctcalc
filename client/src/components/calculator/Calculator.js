@@ -22,6 +22,7 @@ function Calculator() {
     const [concentration, setConcentration] = useState('')
     const [giardiaActive, setGiardiaActive] = useState(true)
     const [giardiaLog, setGiardiaLog] = useState('')
+    const [isFormula, setIsFormula] = useState(false)
     const [virusActive, setVirusActive] = useState(true)
     const [virusLog, setVirusLog] = useState('')
 
@@ -36,7 +37,11 @@ function Calculator() {
     function submit() {
         (async () => {
             const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
-                + `${isFreeChlorine ? `&ph=${ph}&concentration=${concentration}` : ''}`
+                + `${isFreeChlorine
+                    ? `&ph=${ph}&concentration=${concentration}${isFormula
+                        ? '&formula=true'
+                        : ''}`
+                    : ''}`
             const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`
             const urls = []
             giardiaActive && urls.push(giardiaUrl)
@@ -144,6 +149,14 @@ function Calculator() {
                 onChange={setGiardiaLog}
                 disabled={!giardiaActive}
             />
+
+            {giardiaActive && <>
+                <div /> {/* skip grid area */}
+                <div onChange={() => setIsFormula(!isFormula)}>
+                    <input type="radio" checked={!isFormula} /> Round
+                    <input type="radio" checked={isFormula} /> Formula
+                </div>
+            </>}
 
             <div className='label-container'>
                 <input

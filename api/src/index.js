@@ -3,7 +3,7 @@ const cors = require('cors')
 const { Pool } = require('pg')
 const fs = require('fs');
 
-const { interpolate } = require('./utils')
+const { interpolate, fcFormula } = require('./utils')
 const validate = require('./validate');
 
 const app = express()
@@ -27,6 +27,7 @@ app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
     const inactivationLog = apiReq.query['inactivation-log']
     const ph = apiReq.query.ph
     const concentration = apiReq.query.concentration
+    const isFormula = apiReq.query.formula
 
     const validationErrors = validate(disinfectant, pathogen, temperature, inactivationLog, ph, concentration)
 
@@ -34,6 +35,18 @@ app.get('/:disinfectant/:pathogen', (apiReq, apiRes) => {
         apiRes.status(400).send(validationErrors)
     } else {
         const isFreeChlorine = disinfectant === 'free-chlorine'
+
+        isFreeChlorine
+            && isFormula
+            && apiRes.status(200).send(
+                `${fcFormula(
+                    inactivationLog,
+                    temperature,
+                    concentration,
+                    ph
+                )}`
+            )
+
         const sanitizedDisinfectant = disinfectant.replace('-', '_')
 
         const temperatureMin = isFreeChlorine ? 0.5 : 1
