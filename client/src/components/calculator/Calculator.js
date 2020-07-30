@@ -150,7 +150,7 @@ function Calculator() {
                 disabled={!giardiaActive}
             />
 
-            {giardiaActive && <>
+            {isFreeChlorine && giardiaActive && <>
                 <div /> {/* skip grid area */}
                 <div onChange={() => setIsFormula(!isFormula)}>
                     <input type="radio" checked={!isFormula} /> Round
