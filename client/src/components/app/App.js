@@ -12,10 +12,10 @@ function App() {
     <div id="app" className={style}>
       <nav>
         <div className={view === CALC_VIEW ? active : null} onClick={() => setView(CALC_VIEW)}>
-          <a href='javascript: void(0);'>CT Calc</a>
+          <a href='/#'>CT Calc</a>
         </div>
         <div className={view === ABOUT_VIEW ? active : null} onClick={() => setView(ABOUT_VIEW)}>
-          <a href='javascript: void(0);'>About</a>
+          <a href='/#'>About</a>
         </div>
       </nav>
       <main>
