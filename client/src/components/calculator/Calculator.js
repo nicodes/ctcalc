@@ -81,7 +81,7 @@ function Calculator() {
             border: 'solid 2px #faf2cc',
             color: '#8a6d3b'
         }}>WARNING: this site is under development and should only be used for testing</div>
-        <h1>Calculator - test</h1>
+        <h1>CT Calculator</h1>
         <form>
             <div className='label-container'>
                 <span>Disinfectant Type:</span>
