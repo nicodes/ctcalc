@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import Select from '../select/Select';
 import errorSvg from '../../images/error_outline.svg'
-import { disinfectantOptions, phOptions, concentrationOptions, giardiaLogOptions, virusLogOptions } from './calculator.util';
+import { disinfectantOptions, giardiaLogOptions, virusLogOptions } from './calculator.util';
 import './calculator.scss';
 
 // const apiUrl = `http://${process.env.SERVER_URL}:${process.env.API_PORT}`
