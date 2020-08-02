@@ -13,15 +13,16 @@ function Calculator() {
     const [giardiaResult, setGiardiaResult] = useState()
     const [virusResult, setVirusResult] = useState()
     const [serverErrors, setServerErrors] = useState({})
+    const [showErrors, setShowErrors] = useState(false)
 
     // form inputs
     const [disinfectant, setDisinfectant] = useState('')
     const [temperature, setTempterature] = useState('')
-    const [temperatureError, setTempteratureError] = useState(false)
+    const [temperatureError, setTempteratureError] = useState(true)
     const [ph, setPh] = useState('')
-    const [phError, setPhError] = useState(false)
+    const [phError, setPhError] = useState(true)
     const [concentration, setConcentration] = useState('')
-    const [concentrationError, setConcentrationError] = useState(false)
+    const [concentrationError, setConcentrationError] = useState(true)
     const [giardiaActive, setGiardiaActive] = useState(true)
     const [giardiaLog, setGiardiaLog] = useState('')
     const [isFormula, setIsFormula] = useState(false)
@@ -34,29 +35,32 @@ function Calculator() {
     const validateConcentration = c => setConcentrationError(c <= 0 || 3 < c)
 
     function submit() {
-        (async () => {
-            const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
-                + `${isFreeChlorine
-                    ? `&ph=${ph}&concentration=${concentration}${isFormula
-                        ? '&formula=true'
+        showErrors === false && setShowErrors(true);
+
+        !(temperatureError || phError || concentrationError || (giardiaActive && giardiaLog === '') || (virusActive && virusLog === ''))
+            && (async () => {
+                const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
+                    + `${isFreeChlorine
+                        ? `&ph=${ph}&concentration=${concentration}${isFormula
+                            ? '&formula=true'
+                            : ''}`
                         : ''}`
-                    : ''}`
-            const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`
-            const urls = []
-            giardiaActive && urls.push(giardiaUrl)
-            virusActive && urls.push(virusUrl)
-            try {
-                const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
-                setServerErrors([])
-                setGiardiaResult(giardiaRes ? giardiaRes.data : undefined)
-                setVirusResult(virusRes ? virusRes.data : undefined)
-            } catch (error) {
-                const { response } = error
-                if (response.status === 400) {
-                    setServerErrors(response.data)
+                const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`
+                const urls = []
+                giardiaActive && urls.push(giardiaUrl)
+                virusActive && urls.push(virusUrl)
+                try {
+                    const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
+                    setServerErrors([])
+                    setGiardiaResult(giardiaRes ? giardiaRes.data : undefined)
+                    setVirusResult(virusRes ? virusRes.data : undefined)
+                } catch (error) {
+                    const { response } = error
+                    if (response.status === 400) {
+                        setServerErrors(response.data)
+                    }
                 }
-            }
-        })()
+            })()
     }
 
     function clear() {
@@ -98,7 +102,7 @@ function Calculator() {
 
             {isFreeChlorine && <>
                 <div className='label-container'>
-                    {concentrationError && <img src={errorSvg} alt='error' />}
+                    {showErrors && concentrationError && <img src={errorSvg} alt='error' />}
                     <span>Concentration (mg/L):</span>
                 </div>
                 <input
@@ -113,7 +117,7 @@ function Calculator() {
                 />
 
                 <div className='label-container'>
-                    {phError && <img src={errorSvg} alt='error' />}
+                    {showErrors && phError && <img src={errorSvg} alt='error' />}
                     <span>pH:</span>
                 </div>
                 <input
@@ -129,7 +133,7 @@ function Calculator() {
             </>}
 
             <div className='label-container'>
-                {temperatureError && <img src={errorSvg} alt='error' />}
+                {showErrors && temperatureError && <img src={errorSvg} alt='error' />}
                 <span>Temperature (°C):</span>
             </div>
             <input
@@ -144,6 +148,7 @@ function Calculator() {
             />
 
             <div className='label-container'>
+                {showErrors && giardiaActive && giardiaLog === '' && <img src={errorSvg} alt='error' />}
                 <input
                     type="checkbox"
                     checked={giardiaActive}
@@ -170,6 +175,7 @@ function Calculator() {
             </>}
 
             <div className='label-container'>
+                {showErrors && virusActive && virusLog === '' && <img src={errorSvg} alt='error' />}
                 <input
                     type="checkbox"
                     checked={virusActive}
@@ -194,11 +200,12 @@ function Calculator() {
                     className={'submit'}
                     onClick={submit}
                     disabled={
-                        disinfectant === ''
-                        || temperatureError
-                        || (isFreeChlorine && (phError || concentrationError))
-                        || (giardiaActive && !giardiaLog)
-                        || (virusActive && !virusLog)
+                        showErrors &&
+                        (disinfectant === ''
+                            || temperatureError
+                            || (isFreeChlorine && (phError || concentrationError))
+                            || (giardiaActive && !giardiaLog)
+                            || (virusActive && !virusLog))
                     }
                 >Submit</button>
                 <button
