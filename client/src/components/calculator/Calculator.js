@@ -104,7 +104,7 @@ function Calculator() {
                 <input
                     type='number'
                     step='0.01'
-                    min={0.0000001}
+                    min={0.0001}
                     value={concentration}
                     onChange={({ target: { value } }) => {
                         validateConcentration(value)
@@ -119,7 +119,7 @@ function Calculator() {
                 <input
                     type='number'
                     step='0.01'
-                    min={0.0000001}
+                    min={0.0001}
                     value={ph}
                     onChange={({ target: { value } }) => {
                         validatePh(value)
@@ -135,7 +135,7 @@ function Calculator() {
             <input
                 type='number'
                 step='0.01'
-                min={0.0000001}
+                min={0.0001}
                 value={temperature}
                 onChange={({ target: { value } }) => {
                     validateTemperature(value)

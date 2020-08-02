@@ -1,0 +1,32 @@
+.style {
+    height: 100%;
+    display: grid;
+    grid-template-rows: min-content auto;
+
+    nav{
+        background-color: #e3e3e3;
+        height: 50px;
+        display: grid;
+        grid-template-columns: min-content min-content auto; 
+        grid-gap: 20px; 
+        padding-left: 20px;
+
+        div {
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+
+            color: black;
+            &:first-child {
+                font-size: 22px;
+            }
+            &.active {
+                text-decoration: underline;
+            }
+            &:hover {
+                background-color: lightgrey;
+            }
+        }
+    }
+}
