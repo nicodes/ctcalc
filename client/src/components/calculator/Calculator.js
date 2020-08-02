@@ -19,7 +19,9 @@ function Calculator() {
     const [temperature, setTempterature] = useState('')
     const [temperatureError, setTempteratureError] = useState(false)
     const [ph, setPh] = useState('')
+    const [phError, setPhError] = useState(false)
     const [concentration, setConcentration] = useState('')
+    const [concentrationError, setConcentrationError] = useState(false)
     const [giardiaActive, setGiardiaActive] = useState(true)
     const [giardiaLog, setGiardiaLog] = useState('')
     const [isFormula, setIsFormula] = useState(false)
@@ -27,12 +29,9 @@ function Calculator() {
     const [virusLog, setVirusLog] = useState('')
 
     const isFreeChlorine = disinfectant === 'free-chlorine'
-    const validateTemperature = function (t, ifc = isFreeChlorine) {
-        setTempteratureError(
-            t <= 0
-            || 25 < t
-        )
-    }
+    const validateTemperature = t => setTempteratureError(t <= 0 || 25 < t)
+    const validatePh = p => setPhError(p < 6 || 9 < p)
+    const validateConcentration = c => setConcentrationError(c <= 0 || 3 < c)
 
     function submit() {
         (async () => {
@@ -88,7 +87,7 @@ function Calculator() {
                 value={disinfectant}
                 onChange={value => {
                     const isFreeChlorine = value === 'free-chlorine'
-                    validateTemperature(temperature, isFreeChlorine)
+                    validateTemperature(temperature)
                     setDisinfectant(value)
                     if (isFreeChlorine) {
                         setPh('')
@@ -96,6 +95,38 @@ function Calculator() {
                     }
                 }}
             />
+
+            {isFreeChlorine && <>
+                <div className='label-container'>
+                    {concentrationError && <img src={errorSvg} alt='error' />}
+                    <span>Concentration (mg/L):</span>
+                </div>
+                <input
+                    type='number'
+                    step='0.01'
+                    min={0.0000001}
+                    value={concentration}
+                    onChange={({ target: { value } }) => {
+                        validateConcentration(value)
+                        setConcentration(value)
+                    }}
+                />
+
+                <div className='label-container'>
+                    {phError && <img src={errorSvg} alt='error' />}
+                    <span>pH:</span>
+                </div>
+                <input
+                    type='number'
+                    step='0.01'
+                    min={0.0000001}
+                    value={ph}
+                    onChange={({ target: { value } }) => {
+                        validatePh(value)
+                        setPh(value)
+                    }}
+                />
+            </>}
 
             <div className='label-container'>
                 {temperatureError && <img src={errorSvg} alt='error' />}
@@ -111,26 +142,6 @@ function Calculator() {
                     setTempterature(value)
                 }}
             />
-
-            {isFreeChlorine && <>
-                <div className='label-container'>
-                    <span>pH:</span>
-                </div>
-                <Select
-                    options={phOptions}
-                    value={ph}
-                    onChange={setPh}
-                />
-
-                <div className='label-container'>
-                    <span>Concentration (mg/L):</span>
-                </div>
-                <Select
-                    options={concentrationOptions}
-                    value={concentration}
-                    onChange={setConcentration}
-                />
-            </>}
 
             <div className='label-container'>
                 <input
@@ -178,8 +189,23 @@ function Calculator() {
 
             <div /> {/* skip grid area */}
             <div className={'buttons-container'}>
-                <button type='button' className={'submit'} onClick={submit} disabled={temperatureError}>Submit</button>
-                <button type='button' className={'clear'} onClick={clear}>Clear</button>
+                <button
+                    type='button'
+                    className={'submit'}
+                    onClick={submit}
+                    disabled={
+                        disinfectant === ''
+                        || temperatureError
+                        || (isFreeChlorine && (phError || concentrationError))
+                        || (giardiaActive && !giardiaLog)
+                        || (virusActive && !virusLog)
+                    }
+                >Submit</button>
+                <button
+                    type='button'
+                    className={'clear'}
+                    onClick={clear}
+                >Clear</button>
             </div>
 
             {serverErrors.length === 0 && <>
