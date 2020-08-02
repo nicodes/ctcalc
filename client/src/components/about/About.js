@@ -10,7 +10,7 @@ function About({ setCalcView }) {
             <p><a href='https://nepis.epa.gov/Exe/ZyNET.exe/20002249.TXT?ZyActionD=ZyDocument&Client=EPA&Index=1995+Thru+1999&Docs=&Query=&Time=&EndTime=&SearchMethod=1&TocRestrict=n&Toc=&TocEntry=&QField=&QFieldYear=&QFieldMonth=&QFieldDay=&IntQFieldOp=0&ExtQFieldOp=0&XmlQuery=&File=D%3A%5Czyfiles%5CIndex%20Data%5C95thru99%5CTxt%5C00000015%5C20002249.txt&User=ANONYMOUS&Password=anonymous&SortMethod=h%7C-&MaximumDocuments=1&FuzzyDegree=0&ImageQuality=r75g8/r75g8/x150y150g16/i425&Display=hpfr&DefSeekPage=x&SearchBack=ZyActionL&Back=ZyActionS&BackDesc=Results%20page&MaximumPages=1&ZyEntry=1&SeekPage=x&ZyPURL#'>
                 Click for EPA source documents
             </a></p>
-            <p><a href={'javascript: void(0);'} onClick={setCalcView}>Click here to get started</a></p>
+            <p><a href='javascript: void(0);' onClick={setCalcView}>Click here to get started</a></p>
         </div >
     );
 }
