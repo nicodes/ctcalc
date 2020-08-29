@@ -18,7 +18,7 @@ jobs:
         - $SERVER_FINGERPRINT
     - run:
         name: Copy docker-compose.yml to Droplet
-        command: scp docker-compose.prod.yml $SERVER_USR@$SERVER_URL:~/app
+        command: scp docker-compose.prod.yml $SERVER_USR@$SERVER_URL:$APP_DIR
   build_and_publish_api:
     docker:
     - image: circleci/buildpack-deps:stretch
@@ -27,12 +27,12 @@ jobs:
     - setup_remote_docker
     - run:
         name: Build Docker Image
-        command: docker build -f api/Dockerfile.prod -t $DOCKERHUB_API_REPO api
+        command: docker build -f api/Dockerfile.prod -t $DOCKERHUB_API_IMAGE api
     - run:
         name: Publish Docker Image to Docker Hub
         command: |
           echo "$DOCKERHUB_PWD" | docker login -u $DOCKERHUB_USR --password-stdin
-          docker push $DOCKERHUB_API_REPO
+          docker push $DOCKERHUB_API_IMAGE
   build_and_deploy_client:
     docker:
     - image: circleci/node
@@ -57,10 +57,10 @@ jobs:
         - $SERVER_FINGERPRINT
     - run:
         name: Remove Outdated Build from Droplet
-        command: ssh $SERVER_USR@$SERVER_URL rm -rf ~/app/build
+        command: ssh $SERVER_USR@$SERVER_URL rm -rf $APP_DIR/build
     - run:
         name: Copy Build to Droplet
-        command: scp -r client/build $SERVER_USR@$SERVER_URL:~/app
+        command: scp -r client/build $SERVER_USR@$SERVER_URL:$APP_DIR
   restart_containers:
     machine:
       image: ubuntu-1604:201903-01
@@ -72,9 +72,9 @@ jobs:
         name: Stop, Pull, Restart Running Containers
         command: >
           ssh $SERVER_USR@$SERVER_URL " 
-            docker-compose -f ~/app/docker-compose.prod.yml down -v
-            docker-compose -f ~/app/docker-compose.prod.yml pull api
-            docker-compose -f ~/app/docker-compose.prod.yml up -d --build
+            docker-compose -f $APP_DIR/docker-compose.prod.yml down -v
+            docker-compose -f $APP_DIR/docker-compose.prod.yml pull api
+            docker-compose -f $APP_DIR/docker-compose.prod.yml up -d --build
           "
     - slack/notify:
         message: "Finished ctcalc deploy"
