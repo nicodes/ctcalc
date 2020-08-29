@@ -5,7 +5,7 @@ const concentrationOptions = Array(14).fill().map((e, i) => ((i * 0.2) + 0.4).to
 const giardiaLogOptions = Array(6).fill().map((e, i) => ((i + 1) * 0.5).toFixed(1))
 const virusLogOptions = Array(3).fill().map((e, i) => (i + 2).toFixed(1))
 
-function validate(disinfectant, pathogen, temperature, inactivationLog, ph, concentration) {
+const validate = (disinfectant, pathogen, temperature, inactivationLog, ph, concentration) => {
     const errors = {}
 
     if (!disinfectantOptions.includes(disinfectant))

@@ -4,7 +4,7 @@ const { Pool } = require('pg')
 const fs = require('fs');
 
 const { linearInterpolate, bilinearInterpolate, trilinearInterpolate, fcFormula } = require('./utils')
-const validate = require('./validate');
+// const validate = require('./validate');
 
 const app = express()
 app.use(cors())
@@ -20,7 +20,7 @@ const dbConfig = {
 const pool = new Pool(dbConfig)
 
 // TODO move to utils
-async function queryDb(sql) {
+const queryDb = async (sql) => {
     try {
         const dbRes = await pool.query(sql);
         return dbRes
@@ -30,16 +30,14 @@ async function queryDb(sql) {
 }
 
 // TODO move to utils
-function generateSql(
+const generateSql = (
     disinfectant,
     pathogen,
     temperature,
     inactivationLog,
     ph,
     concentration
-) {
-    return `SELECT inactivation FROM ${disinfectant}.${pathogen} WHERE temperature=${temperature} AND inactivation_log=${inactivationLog}${ph && concentration ? ` AND ph=${ph} AND concentration=${concentration}` : ''};`
-}
+) => `SELECT inactivation FROM ${disinfectant}.${pathogen} WHERE temperature=${temperature} AND inactivation_log=${inactivationLog}${ph && concentration ? ` AND ph=${ph} AND concentration=${concentration}` : ''};`
 
 app.get('/:disinfectant/:pathogen', async (apiReq, apiRes) => {
     console.log(`GET /${apiReq.params.disinfectant}/${apiReq.params.pathogen}`, apiReq.query)
@@ -227,7 +225,7 @@ app.get('/:disinfectant/:pathogen', async (apiReq, apiRes) => {
     }
 })
 
-app.get('/now', async function (apiReq, apiRes) {
+app.get('/now', async (apiReq, apiRes) => {
     console.log('GET /now')
     try {
         const dbRes = await pool.query('SELECT NOW();');
@@ -237,11 +235,11 @@ app.get('/now', async function (apiReq, apiRes) {
     }
 });
 
-app.get('/test', function (req, res) {
+app.get('/test', (req, res) => {
     res.status(200).send('test');
 });
 
-app.get('*', function (req, res) {
+app.get('*', (req, res) => {
     res.status(404).send('Not found');
 });
 

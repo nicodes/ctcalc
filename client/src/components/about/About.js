@@ -1,6 +1,6 @@
 import React from 'react';
 
-function About({ setCalcView }) {
+const About = ({ setCalcView }) => {
     return (
         <div style={{ maxWidth: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
             <h1>Contact Time Calculator</h1>

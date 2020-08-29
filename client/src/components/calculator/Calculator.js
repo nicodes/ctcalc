@@ -9,7 +9,7 @@ import './calculator.scss';
 // const apiUrl = `http://${process.env.SERVER_URL}:${process.env.API_PORT}`
 const apiUrl = process.env.REACT_APP_API_URL
 
-function Calculator() {
+const Calculator = () => {
     const [giardiaResult, setGiardiaResult] = useState()
     const [virusResult, setVirusResult] = useState()
     const [serverErrors, setServerErrors] = useState({})
@@ -25,45 +25,50 @@ function Calculator() {
     const [concentrationError, setConcentrationError] = useState(true)
     const [giardiaActive, setGiardiaActive] = useState(true)
     const [giardiaLog, setGiardiaLog] = useState('')
-    const [isFormula, setIsFormula] = useState(false)
     const [virusActive, setVirusActive] = useState(true)
     const [virusLog, setVirusLog] = useState('')
+    const [isFormula, setIsFormula] = useState(false)
 
+    // helpers
     const isFreeChlorine = disinfectant === 'free-chlorine'
     const validateTemperature = t => setTempteratureError(t <= 0 || 25 < t)
     const validatePh = p => setPhError(p < 6 || 9 < p)
     const validateConcentration = c => setConcentrationError(c <= 0 || 3 < c)
 
-    function submit() {
-        showErrors === false && setShowErrors(true);
+    const submit = () => {
+        setGiardiaResult(undefined)
+        setVirusResult(undefined)
+        !showErrors && setShowErrors(true);
 
-        !(temperatureError || phError || concentrationError || (giardiaActive && giardiaLog === '') || (virusActive && virusLog === ''))
-            && (async () => {
-                const giardiaUrl = `${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
-                    + `${isFreeChlorine
-                        ? `&ph=${ph}&concentration=${concentration}${isFormula
-                            ? '&formula=true'
-                            : ''}`
+        !(temperatureError
+            || (isFreeChlorine && (phError || concentrationError))
+            || (giardiaActive && giardiaLog === '')
+            || (virusActive && virusLog === '')
+        ) && (async () => {
+            const urls = []
+            giardiaActive && urls.push(`${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
+                + `${isFreeChlorine
+                    ? `&ph=${ph}&concentration=${concentration}${isFormula
+                        ? '&formula=true'
                         : ''}`
-                const virusUrl = `${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`
-                const urls = []
-                giardiaActive && urls.push(giardiaUrl)
-                virusActive && urls.push(virusUrl)
-                try {
-                    const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
-                    setServerErrors([])
-                    setGiardiaResult(giardiaRes ? giardiaRes.data : undefined)
-                    setVirusResult(virusRes ? virusRes.data : undefined)
-                } catch (error) {
-                    const { response } = error
-                    if (response.status === 400) {
-                        setServerErrors(response.data)
-                    }
+                    : ''}`)
+            virusActive && urls.push(`${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`)
+            try {
+                const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
+                setServerErrors([])
+                giardiaRes && setGiardiaResult(giardiaRes.data)
+                virusRes && setVirusResult(virusRes.data)
+            } catch (error) {
+                console.log(error)
+                const { response } = error
+                if (response.status === 400) {
+                    setServerErrors(response.data)
                 }
-            })()
+            }
+        })()
     }
 
-    function clear() {
+    const clear = () => {
         setGiardiaActive(true)
         setVirusActive(true)
         setDisinfectant('')

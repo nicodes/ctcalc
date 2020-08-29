@@ -1,14 +1,14 @@
-function linearInterpolate(x, x0, x1, c0, c1) {
+const linearInterpolate = (x, x0, x1, c0, c1) => {
     console.log('bilinearInterpolate', x, x0, x1, c0, c1)
     const c = c0 + (c1 - c0) / (x1 - x0) * (x - x0)
     return c
 }
 
-function bilinearInterpolate(
+const bilinearInterpolate = (
     x, x0, x1,
     y, y0, y1,
     c00, c01, c10, c11
-) {
+) => {
     console.log('bilinearInterpolate', x, x0, x1,
         y, y0, y1,
         c00, c01, c10, c11)
@@ -26,12 +26,12 @@ function bilinearInterpolate(
     return c
 }
 
-function trilinearInterpolate(
+const trilinearInterpolate = (
     x, x0, x1,
     y, y0, y1,
     z, z0, z1,
     c000, c001, c010, c011, c100, c101, c110, c111
-) {
+) => {
     console.log('trilinearInterpolate', x, x0, x1,
         y, y0, y1,
         z, z0, z1,
@@ -68,29 +68,26 @@ const fcFormulaLow = (
     )
 )
 
-function fcFormulaHigh(
+const fcFormulaHigh = (
     inactivationLog,
     temperature,
     concentration,
     ph
-) {
-    return 0.361 * inactivationLog * (
-        -2.261 + Math.exp(
-            2.69
-            - 0.065 * temperature
-            + 0.111 * concentration
-            + 0.361 * ph
-        )
+) => 0.361 * inactivationLog * (
+    -2.261 + Math.exp(
+        2.69
+        - 0.065 * temperature
+        + 0.111 * concentration
+        + 0.361 * ph
     )
-}
+)
 
-function fcFormula(
+const fcFormula = (
     inactivationLog,
     temperature,
     concentration,
     ph
-) {
-    return temperature < 12.5
+) => temperature < 12.5
         ? fcFormulaLow(
             inactivationLog,
             temperature,
@@ -103,7 +100,6 @@ function fcFormula(
             concentration,
             ph
         )
-}
 
 module.exports = {
     linearInterpolate,

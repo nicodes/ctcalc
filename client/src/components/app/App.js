@@ -6,7 +6,7 @@ import { style, active } from './app.module.scss'
 const CALC_VIEW = 0
 const ABOUT_VIEW = 1
 
-function App() {
+const App = () => {
   const [view, setView] = useState(CALC_VIEW)
   return (
     <div id="app" className={style}>
@@ -19,8 +19,13 @@ function App() {
         </div>
       </nav>
       <main>
-        {view === CALC_VIEW && <Calculator />}
-        {view === ABOUT_VIEW && <About setCalcView={() => setView(CALC_VIEW)} />}
+        {(() => {
+          switch (view) {
+            case CALC_VIEW: return <Calculator />
+            case ABOUT_VIEW: return <About setCalcView={() => setView(CALC_VIEW)} />
+            default: return
+          }
+        })()}
       </main>
     </div >
   );
