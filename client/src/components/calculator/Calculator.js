@@ -6,7 +6,6 @@ import errorSvg from '../../images/error_outline.svg'
 import { disinfectantOptions, giardiaLogOptions, virusLogOptions } from './calculator.util';
 import './calculator.scss';
 
-// const apiUrl = `http://${process.env.SERVER_URL}:${process.env.API_PORT}`
 const apiUrl = process.env.REACT_APP_API_URL
 
 const Calculator = () => {
@@ -14,6 +13,7 @@ const Calculator = () => {
     const [virusResult, setVirusResult] = useState()
     const [serverErrors, setServerErrors] = useState({})
     const [showErrors, setShowErrors] = useState(false)
+    const [disableAll, setDisableAll] = useState(false)
 
     // form inputs
     const [disinfectant, setDisinfectant] = useState('')
@@ -54,8 +54,9 @@ const Calculator = () => {
                     : ''}`)
             virusActive && urls.push(`${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`)
             try {
-                const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
                 setServerErrors([])
+                setDisableAll(true)
+                const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
                 giardiaRes && setGiardiaResult(giardiaRes.data)
                 virusRes && setVirusResult(virusRes.data)
             } catch (error) {
@@ -69,6 +70,8 @@ const Calculator = () => {
     }
 
     const clear = () => {
+        setShowErrors(false)
+        setDisableAll(false)
         setGiardiaActive(true)
         setVirusActive(true)
         setDisinfectant('')
@@ -92,6 +95,7 @@ const Calculator = () => {
                 <span>Disinfectant Type:</span>
             </div>
             <Select
+                disabled={disableAll}
                 options={disinfectantOptions}
                 value={disinfectant}
                 onChange={value => {
@@ -114,6 +118,7 @@ const Calculator = () => {
                     type='number'
                     step='0.01'
                     min={0.0001}
+                    disabled={disableAll}
                     value={concentration}
                     onChange={({ target: { value } }) => {
                         validateConcentration(value)
@@ -129,6 +134,7 @@ const Calculator = () => {
                     type='number'
                     step='0.01'
                     min={0.0001}
+                    disabled={disableAll}
                     value={ph}
                     onChange={({ target: { value } }) => {
                         validatePh(value)
@@ -145,6 +151,7 @@ const Calculator = () => {
                 type='number'
                 step='0.01'
                 min={0.0001}
+                disabled={disableAll}
                 value={temperature}
                 onChange={({ target: { value } }) => {
                     validateTemperature(value)
@@ -156,6 +163,7 @@ const Calculator = () => {
                 {showErrors && giardiaActive && giardiaLog === '' && <img src={errorSvg} alt='error' />}
                 <input
                     type="checkbox"
+                    disabled={disableAll}
                     checked={giardiaActive}
                     onChange={() => {
                         giardiaActive === true && setGiardiaLog('')
@@ -168,14 +176,20 @@ const Calculator = () => {
                 options={giardiaLogOptions}
                 value={giardiaLog}
                 onChange={setGiardiaLog}
-                disabled={!giardiaActive}
+                disabled={disableAll || !giardiaActive}
             />
 
             {isFreeChlorine && giardiaActive && <>
                 <div /> {/* skip grid area */}
                 <div onChange={() => setIsFormula(!isFormula)}>
-                    <input type="radio" checked={!isFormula} /> Round
-                    <input type="radio" checked={isFormula} /> Formula
+                    <input
+                        type="radio"
+                        disabled={disableAll}
+                        checked={!isFormula} /> Round
+                    <input
+                        type="radio"
+                        disabled={disableAll}
+                        checked={isFormula} /> Formula
                 </div>
             </>}
 
@@ -183,6 +197,7 @@ const Calculator = () => {
                 {showErrors && virusActive && virusLog === '' && <img src={errorSvg} alt='error' />}
                 <input
                     type="checkbox"
+                    disabled={disableAll}
                     checked={virusActive}
                     onChange={() => {
                         virusActive === true && setVirusLog('')
@@ -192,10 +207,10 @@ const Calculator = () => {
                 <span className={virusActive ? null : 'kebab'}>Logs of Virus Inactivation:</span>
             </div>
             <Select
+                disabled={disableAll || !virusActive}
                 options={virusLogOptions}
                 value={virusLog}
                 onChange={setVirusLog}
-                disabled={!virusActive}
             />
 
             <div /> {/* skip grid area */}
@@ -205,12 +220,12 @@ const Calculator = () => {
                     className={'submit'}
                     onClick={submit}
                     disabled={
-                        showErrors &&
-                        (disinfectant === ''
-                            || temperatureError
-                            || (isFreeChlorine && (phError || concentrationError))
-                            || (giardiaActive && !giardiaLog)
-                            || (virusActive && !virusLog))
+                        disableAll || (showErrors &&
+                            (disinfectant === ''
+                                || temperatureError
+                                || (isFreeChlorine && (phError || concentrationError))
+                                || (giardiaActive && !giardiaLog)
+                                || (virusActive && !virusLog)))
                     }
                 >Submit</button>
                 <button
