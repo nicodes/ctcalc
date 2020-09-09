@@ -61,10 +61,11 @@ const Calculator = () => {
                 virusRes && setVirusResult(virusRes.data)
             } catch (error) {
                 console.log(error)
-                const { response } = error
-                if (response.status === 400) {
-                    setServerErrors(response.data)
-                }
+                // TODO fix this
+                // const { response } = error
+                // if (response.status === 400) {
+                //     setServerErrors(response.data)
+                // }
             }
         })()
     }
