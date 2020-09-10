@@ -82,7 +82,7 @@ const Calculator = () => {
         setVirusLog('')
     }
 
-    const errorImg = text => <><img src={errorSvg} data-tip={text} alt='error' /><ReactTooltip place='right' /></>
+    const errorImg = text => showErrors ? <><img src={errorSvg} data-tip={text} alt='error' /><ReactTooltip place='right' /></> : <div />
 
     return (<div className={'calculator'}>
         <div style={{
@@ -95,8 +95,8 @@ const Calculator = () => {
         }}>WARNING: this site is under development and should only be used for testing</div>
         <h1>CT Calculator</h1>
         <form>
+            {disinfectant === '' ? errorImg("Please select a value") : <div />}
             <div className='label-container'>
-                {showErrors && disinfectant === '' && errorImg("Please select a value")}
                 <span>Disinfectant Type:</span>
             </div>
             <Select
@@ -115,8 +115,8 @@ const Calculator = () => {
             />
 
             {isFreeChlorine && <>
+                {concentrationError ? errorImg("Please enter a concentration between (0, 3]") : <div />}
                 <div className='label-container'>
-                    {showErrors && concentrationError && errorImg("Please enter a concentration between (0, 3]")}
                     <span>Concentration (mg/L):</span>
                 </div>
                 <input
@@ -131,8 +131,8 @@ const Calculator = () => {
                     }}
                 />
 
+                {phError ? errorImg("Please enter a ph between [6, 9]") : <div />}
                 <div className='label-container'>
-                    {showErrors && phError && errorImg("Please enter a ph between [6, 9]")}
                     <span>pH:</span>
                 </div>
                 <input
@@ -148,8 +148,8 @@ const Calculator = () => {
                 />
             </>}
 
+            {temperatureError ? errorImg("Please enter a temperature between (0, 25]") : <div />}
             <div className='label-container'>
-                {showErrors && temperatureError && errorImg("Please enter a temperature between (0, 25]")}
                 <span>Temperature (°C):</span>
             </div>
             <input
@@ -164,8 +164,8 @@ const Calculator = () => {
                 }}
             />
 
+            {giardiaActive && giardiaLog === '' ? errorImg("Please select a value") : <div />}
             <div className='label-container'>
-                {showErrors && giardiaActive && giardiaLog === '' && errorImg("Please select a value")}
                 <input
                     type="checkbox"
                     disabled={disableAll}
@@ -184,22 +184,8 @@ const Calculator = () => {
                 disabled={disableAll || !giardiaActive}
             />
 
-            {isFreeChlorine && giardiaActive && <>
-                <div /> {/* skip grid area */}
-                <div onChange={() => setIsFormula(!isFormula)}>
-                    <input
-                        type="radio"
-                        disabled={disableAll}
-                        checked={!isFormula} /> Interpolate
-                    <input
-                        type="radio"
-                        disabled={disableAll}
-                        checked={isFormula} /> Formula
-                </div>
-            </>}
-
+            {virusActive && virusLog === '' ? errorImg("Please select a value") : <div />}
             <div className='label-container'>
-                {showErrors && virusActive && virusLog === '' && errorImg("Please select a value")}
                 <input
                     type="checkbox"
                     disabled={disableAll}
@@ -218,6 +204,30 @@ const Calculator = () => {
                 onChange={setVirusLog}
             />
 
+            {isFreeChlorine && giardiaActive && <>
+                <div /> {/* skip grid area */}
+                <div className='label-container'>
+                    <span>Methodology:</span>
+                </div>
+                <div onChange={() => setIsFormula(!isFormula)}>
+                    <input
+                        type="radio"
+                        disabled={disableAll}
+                        checked={!isFormula} /> Interpolate
+                    <br />
+                    {/* <input
+                        type="radio"
+                        disabled={disableAll}
+                        checked={!isFormula} /> Round
+                    <br /> */}
+                    <input
+                        type="radio"
+                        disabled={disableAll}
+                        checked={isFormula} /> Formula
+                </div>
+            </>}
+
+            <div style={{ width: '23px' }} /> {/* skip grid area, reserves space for error imgs */}
             <div /> {/* skip grid area */}
             <div className={'buttons-container'}>
                 <button
@@ -241,9 +251,10 @@ const Calculator = () => {
             </div>
 
             {serverErrors.length === 0 && <>
-                <div style={{ backgroundColor: '#e3e3e3', 'height': '3px', 'grid-column': `span 2` }} />
+                <div style={{ backgroundColor: '#e3e3e3', 'height': '3px', 'grid-column': `span 3` }} />
                 {[['Giardia', giardiaResult], ['Virus', virusResult]].map(([label, result]) => result && <>
-                    <span style={{ justifySelf: 'right' }}>{label} Inactivation:</span>
+                    <div />
+                    <span style={{ justifySelf: 'right', marginRight: '10px' }}>{label} Inactivation:</span>
                     <span>{JSON.stringify(result)}</span>
                 </>)}
             </>}
