@@ -21,7 +21,7 @@ const validate = (params, query) => {
 
     (ph < 6 || 9 < ph) && err.push(`Invalid ph: ${ph}`);
     (concentration <= 0 || 3 < concentration) && err.push(`Invalid concentration: ${concentration}`)
-    isFormula === true && !isFreeChlorine && err.push(`Invalid formula: ${isFormula}`)
+    isFormula === true && !isFreeChlorine && err.push(`Invalid disinfectant for formula value: ${isFormula}, disinfectant type must be "free-chlorine"`)
 
     return [{ disinfectant: disinfectant.replace('-', '_'), pathogen, temperature, inactivationLog, ph, concentration, isFormula }, isFreeChlorine, err]
 }
