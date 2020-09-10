@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios'
+import ReactTooltip from 'react-tooltip';
 
 import Select from '../select/Select';
 import errorSvg from '../../images/error_outline.svg'
@@ -81,6 +82,8 @@ const Calculator = () => {
         setVirusLog('')
     }
 
+    const errorImg = text => <><img src={errorSvg} data-tip={text} alt='error' /><ReactTooltip place='right' /></>
+
     return (<div className={'calculator'}>
         <div style={{
             marginTop: '20px',
@@ -93,6 +96,7 @@ const Calculator = () => {
         <h1>CT Calculator</h1>
         <form>
             <div className='label-container'>
+                {showErrors && disinfectant === '' && errorImg("Please select a value")}
                 <span>Disinfectant Type:</span>
             </div>
             <Select
@@ -112,7 +116,7 @@ const Calculator = () => {
 
             {isFreeChlorine && <>
                 <div className='label-container'>
-                    {showErrors && concentrationError && <img src={errorSvg} alt='error' />}
+                    {showErrors && concentrationError && errorImg("Please enter a concentration between (0, 3]")}
                     <span>Concentration (mg/L):</span>
                 </div>
                 <input
@@ -128,7 +132,7 @@ const Calculator = () => {
                 />
 
                 <div className='label-container'>
-                    {showErrors && phError && <img src={errorSvg} alt='error' />}
+                    {showErrors && phError && errorImg("Please enter a ph between [6, 9]")}
                     <span>pH:</span>
                 </div>
                 <input
@@ -145,7 +149,7 @@ const Calculator = () => {
             </>}
 
             <div className='label-container'>
-                {showErrors && temperatureError && <img src={errorSvg} alt='error' />}
+                {showErrors && temperatureError && errorImg("Please enter a temperature between (0, 25]")}
                 <span>Temperature (°C):</span>
             </div>
             <input
@@ -161,7 +165,7 @@ const Calculator = () => {
             />
 
             <div className='label-container'>
-                {showErrors && giardiaActive && giardiaLog === '' && <img src={errorSvg} alt='error' />}
+                {showErrors && giardiaActive && giardiaLog === '' && errorImg("Please select a value")}
                 <input
                     type="checkbox"
                     disabled={disableAll}
@@ -186,7 +190,7 @@ const Calculator = () => {
                     <input
                         type="radio"
                         disabled={disableAll}
-                        checked={!isFormula} /> Round
+                        checked={!isFormula} /> Interpolate
                     <input
                         type="radio"
                         disabled={disableAll}
@@ -195,7 +199,7 @@ const Calculator = () => {
             </>}
 
             <div className='label-container'>
-                {showErrors && virusActive && virusLog === '' && <img src={errorSvg} alt='error' />}
+                {showErrors && virusActive && virusLog === '' && errorImg("Please select a value")}
                 <input
                     type="checkbox"
                     disabled={disableAll}
