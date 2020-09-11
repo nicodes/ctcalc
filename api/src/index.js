@@ -141,6 +141,7 @@ app.get('/:disinfectant/:pathogen', async (apiReq, apiRes) => {
                 const sql = [temperatureLow, temperatureHigh].map(
                     t => generateSql(disinfectant, pathogen, t, inactivationLog, ph, concentration)
                 ).join('')
+                console.log(sql)
                 dbRes = await queryDb(pool, sql)
                 return apiRes.status(200).send(
                     `${linearInterpolate(temperature, temperatureLow, temperatureHigh, ...dbRes.map(r => Number(r.rows[0].inactivation)))}`
