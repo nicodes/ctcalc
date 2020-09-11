@@ -12,7 +12,6 @@ const apiUrl = process.env.REACT_APP_API_URL
 const Calculator = () => {
     const [giardiaResult, setGiardiaResult] = useState()
     const [virusResult, setVirusResult] = useState()
-    const [serverErrors, setServerErrors] = useState({})
     const [showErrors, setShowErrors] = useState(false)
     const [disableAll, setDisableAll] = useState(false)
 
@@ -55,24 +54,20 @@ const Calculator = () => {
                     : ''}`)
             virusActive && urls.push(`${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`)
             try {
-                setServerErrors([])
                 setDisableAll(true)
                 const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));
                 giardiaRes && setGiardiaResult(giardiaRes.data)
                 virusRes && setVirusResult(virusRes.data)
             } catch (error) {
                 console.log(error)
-                // TODO fix this
-                // const { response } = error
-                // if (response.status === 400) {
-                //     setServerErrors(response.data)
-                // }
             }
         })()
     }
 
     const clear = () => {
         setShowErrors(false)
+        setGiardiaResult()
+        setVirusResult()
         setDisableAll(false)
         setGiardiaActive(true)
         setVirusActive(true)
@@ -82,7 +77,7 @@ const Calculator = () => {
         setVirusLog('')
     }
 
-    const errorImg = text => showErrors ? <><img src={errorSvg} data-tip={text} alt='error' /><ReactTooltip place='right' /></> : <div />
+    const errorImg = text => showErrors && <><img src={errorSvg} data-tip={text} alt='error' /><ReactTooltip place='right' /></>
 
     return (<div className={'calculator'}>
         <div style={{
@@ -95,8 +90,8 @@ const Calculator = () => {
         }}>WARNING: this site is under development and should only be used for testing</div>
         <h1>CT Calculator</h1>
         <form>
-            {disinfectant === '' ? errorImg("Please select a value") : <div />}
             <div className='label-container'>
+                {disinfectant === '' && errorImg("Please select a value")}
                 <span>Disinfectant Type:</span>
             </div>
             <Select
@@ -115,8 +110,8 @@ const Calculator = () => {
             />
 
             {isFreeChlorine && <>
-                {concentrationError ? errorImg("Please enter a concentration between (0, 3]") : <div />}
                 <div className='label-container'>
+                    {concentrationError && errorImg("Please enter a concentration between (0, 3]")}
                     <span>Concentration (mg/L):</span>
                 </div>
                 <input
@@ -131,8 +126,8 @@ const Calculator = () => {
                     }}
                 />
 
-                {phError ? errorImg("Please enter a ph between [6, 9]") : <div />}
                 <div className='label-container'>
+                    {phError && errorImg("Please enter a ph between [6, 9]")}
                     <span>pH:</span>
                 </div>
                 <input
@@ -148,8 +143,8 @@ const Calculator = () => {
                 />
             </>}
 
-            {temperatureError ? errorImg("Please enter a temperature between (0, 25]") : <div />}
             <div className='label-container'>
+                {temperatureError && errorImg("Please enter a temperature between (0, 25]")}
                 <span>Temperature (°C):</span>
             </div>
             <input
@@ -164,8 +159,8 @@ const Calculator = () => {
                 }}
             />
 
-            {giardiaActive && giardiaLog === '' ? errorImg("Please select a value") : <div />}
             <div className='label-container'>
+                {giardiaActive && giardiaLog === '' && errorImg("Please select a value")}
                 <input
                     type="checkbox"
                     disabled={disableAll}
@@ -184,8 +179,8 @@ const Calculator = () => {
                 disabled={disableAll || !giardiaActive}
             />
 
-            {virusActive && virusLog === '' ? errorImg("Please select a value") : <div />}
             <div className='label-container'>
+                {virusActive && virusLog === '' && errorImg("Please select a value")}
                 <input
                     type="checkbox"
                     disabled={disableAll}
@@ -227,8 +222,6 @@ const Calculator = () => {
                 </div>
             </>}
 
-            <div style={{ width: '23px' }} /> {/* skip grid area, reserves space for error imgs */}
-            <div /> {/* skip grid area */}
             <div className={'buttons-container'}>
                 <button
                     type='button'
@@ -247,19 +240,14 @@ const Calculator = () => {
                     type='button'
                     className={'clear'}
                     onClick={clear}
-                >Clear</button>
+                >{disableAll ? 'Reset' : 'Clear'}</button>
             </div>
 
-            {serverErrors.length === 0 && <>
-                <div style={{ backgroundColor: '#e3e3e3', 'height': '3px', 'grid-column': `span 3` }} />
-                {[['Giardia', giardiaResult], ['Virus', virusResult]].map(([label, result]) => result && <>
-                    <div />
-                    <span style={{ justifySelf: 'right', marginRight: '10px' }}>{label} Inactivation:</span>
-                    <span>{JSON.stringify(result)}</span>
-                </>)}
-            </>}
+            {(giardiaResult || virusResult) && <div className='divider' />}
+            {giardiaResult && <span className='result-container'>Giardia Inactivation: {JSON.stringify(giardiaResult)}</span>}
+            {virusResult && <span>Virus Inactivation: {JSON.stringify(virusResult)}</span>}
         </form>
-    </div>);
+    </div >);
 }
 
 export default Calculator;
