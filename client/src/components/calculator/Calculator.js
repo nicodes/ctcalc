@@ -27,7 +27,7 @@ const Calculator = () => {
     const [giardiaLog, setGiardiaLog] = useState('')
     const [virusActive, setVirusActive] = useState(true)
     const [virusLog, setVirusLog] = useState('')
-    const [isFormula, setIsFormula] = useState(false)
+    const [methodology, setMethodology] = useState('interpolation')
 
     // helpers
     const isFreeChlorine = disinfectant === 'free-chlorine'
@@ -48,7 +48,7 @@ const Calculator = () => {
             const urls = []
             giardiaActive && urls.push(`${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
                 + `${isFreeChlorine
-                    ? `&ph=${ph}&concentration=${concentration}${isFormula
+                    ? `&ph=${ph}&concentration=${concentration}${methodology === 'formula'
                         ? '&formula=true'
                         : ''}`
                     : ''}`)
@@ -203,11 +203,12 @@ const Calculator = () => {
                 <div className='label-container'>
                     <span>Methodology:</span>
                 </div>
-                <div onChange={() => setIsFormula(!isFormula)}>
+                <div>
                     <input
                         type="radio"
                         disabled={disableAll}
-                        checked={!isFormula} />
+                        checked={methodology === 'interpolate'}
+                        onChange={() => setMethodology('interpolate')} />
                     <span>Interpolate</span>
                     <br />
 
@@ -222,7 +223,8 @@ const Calculator = () => {
                     <input
                         type="radio"
                         disabled={disableAll}
-                        checked={isFormula} />
+                        checked={methodology === 'formula'}
+                        onChange={() => setMethodology('formula')} />
                     <span>Formula</span>
                 </div>
             </>}
@@ -246,11 +248,11 @@ const Calculator = () => {
             {(giardiaResult || virusResult) && <div className='divider' />}
             {giardiaResult && <>
                 <span className='result-container'>Giardia Inactivation:</span>
-                <input value={giardiaResult} />
+                <input type='text' value={giardiaResult} />
             </>}
             {virusResult && <>
                 <span>Virus Inactivation:</span>
-                <input value={virusResult} />
+                <input type='text' value={virusResult} />
             </>}
         </form>
     </div >);
