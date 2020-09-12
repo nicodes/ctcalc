@@ -200,7 +200,6 @@ const Calculator = () => {
             />
 
             {isFreeChlorine && giardiaActive && <>
-                <div /> {/* skip grid area */}
                 <div className='label-container'>
                     <span>Methodology:</span>
                 </div>
@@ -208,17 +207,23 @@ const Calculator = () => {
                     <input
                         type="radio"
                         disabled={disableAll}
-                        checked={!isFormula} /> Interpolate
+                        checked={!isFormula} />
+                    <span>Interpolate</span>
                     <br />
+
                     {/* <input
                         type="radio"
                         disabled={disableAll}
-                        checked={!isFormula} /> Round
+                        checked={!isFormula}
+                    />
+                    <span>Round</span>
                     <br /> */}
+
                     <input
                         type="radio"
                         disabled={disableAll}
-                        checked={isFormula} /> Formula
+                        checked={isFormula} />
+                    <span>Formula</span>
                 </div>
             </>}
 
@@ -234,18 +239,19 @@ const Calculator = () => {
                                 || (isFreeChlorine && (phError || concentrationError))
                                 || (giardiaActive && !giardiaLog)
                                 || (virusActive && !virusLog)))
-                    }
-                >Submit</button>
-                <button
-                    type='button'
-                    className={'clear'}
-                    onClick={clear}
-                >{disableAll ? 'Reset' : 'Clear'}</button>
+                    }>Submit</button>
+                <button type='button' className={'clear'} onClick={clear} >{disableAll ? 'Reset' : 'Clear'}</button>
             </div>
 
             {(giardiaResult || virusResult) && <div className='divider' />}
-            {giardiaResult && <span className='result-container'>Giardia Inactivation: {JSON.stringify(giardiaResult)}</span>}
-            {virusResult && <span>Virus Inactivation: {JSON.stringify(virusResult)}</span>}
+            {giardiaResult && <>
+                <span className='result-container'>Giardia Inactivation:</span>
+                <input value={giardiaResult} />
+            </>}
+            {virusResult && <>
+                <span>Virus Inactivation:</span>
+                <input value={virusResult} />
+            </>}
         </form>
     </div >);
 }

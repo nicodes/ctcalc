@@ -17,7 +17,6 @@
         // mobile screen
         @media (max-width: 600px) {
             grid-template-columns: min-content;
-
         }
 
         // desktop screen
@@ -26,7 +25,12 @@
             .label-container {
                 margin-right: 10px;
             }
-            .divider, .result-container {
+
+            .buttons-container{
+                grid-column-start: 2;
+            }
+
+            .divider {
                 grid-column: span 2;
             }
         }
@@ -39,14 +43,14 @@
         input[type='number'], select {
             border: 1px solid $grey;
             border-radius: 5px;
-        }
-        input[type='number'] {
             height: 20px;
             padding: 1px 8px 1px 8px;
         }
+        
         select {
             height: 24px;
         }
+
         input[type='checkbox'] {
             margin: 0 10px 0 0;
         }
