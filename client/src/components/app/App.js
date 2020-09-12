@@ -1,31 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  Switch,
+  Route,
+  Link,
+  useLocation
+} from "react-router-dom";
+
 import Calculator from '../calculator/Calculator'
 import About from '../about/About'
 import { style, active } from './app.module.scss'
 
-const CALC_VIEW = 0
-const ABOUT_VIEW = 1
-
 const App = () => {
-  const [view, setView] = useState(CALC_VIEW)
+  const { pathname } = useLocation()
   return (
     <div id="app" className={style}>
       <nav>
-        <div className={view === CALC_VIEW ? active : null} onClick={() => setView(CALC_VIEW)}>
-          <a href='/#'>CT Calc</a>
-        </div>
-        <div className={view === ABOUT_VIEW ? active : null} onClick={() => setView(ABOUT_VIEW)}>
-          <a href='/#'>About</a>
-        </div>
+        <Link className={pathname === '/' ? active : null} to="/">CT Calc</Link>
+        <Link className={pathname === '/about' ? active : null} to="/about">About</Link>
       </nav>
       <main>
-        {(() => {
-          switch (view) {
-            case CALC_VIEW: return <Calculator />
-            case ABOUT_VIEW: return <About setCalcView={() => setView(CALC_VIEW)} />
-            default: return
-          }
-        })()}
+        <Switch>
+          <Route path="/" exact>
+            <Calculator />
+          </Route>
+          <Route path="/about" exact>
+            <About />
+          </Route>
+        </Switch>
       </main>
     </div >
   );

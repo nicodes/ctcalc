@@ -1,6 +1,9 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+
 import pdf from '../../assets/disinfection-profiling-and-benchmarking-guidance-manual.pdf'
-const About = ({ setCalcView }) => {
+
+const About = () => {
     return (
         <div style={{ maxWidth: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
             <h1>About</h1>
@@ -8,7 +11,7 @@ const About = ({ setCalcView }) => {
             <p>The contact time provided is calculated based on user inputs of the disinfectant residual and the time provided.</p>
             <p>The amount contact time needed is determined from user inputs of the type of disinfectant, the logs of inactivation needed, temperature, pH, and disinfectant residual. The calculator uses the methods and tables in EPA Manual EPA815-R-99-013, titled “Disinfection Profiling and Benchmarking Guidance Manual”, dated August 1999, for determining the amount of inactivation needed.</p>
             <p><a href={pdf} download>Click here to download EPA source documents</a></p>
-            <p><a href='/#' onClick={setCalcView}>Click here to get started</a></p>
+            <Link to="/">Click here to get started</Link>
             <p>For more information or questions please contact us at <a href="mailto:info@ctcalc.com">info@ctcalc.com</a></p>
         </div >
     );
