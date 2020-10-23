@@ -31,7 +31,7 @@ const Calculator = () => {
 
     // helpers
     const isFreeChlorine = disinfectant === 'free-chlorine'
-    const validateTemperature = t => setTempteratureError(t <= 0 || 25 < t)
+    const validateTemperature = t => setTempteratureError(typeof t === 'number' && (t <= 0 || 25 < t))
     const validatePh = p => setPhError(p < 6 || 9 < p)
     const validateConcentration = c => setConcentrationError(c <= 0 || 3 < c)
 

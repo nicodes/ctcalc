@@ -30,9 +30,19 @@ app.get('/:disinfectant/:pathogen', async (apiReq, apiRes) => {
     console.log(`GET /${apiReq.params.disinfectant}/${apiReq.params.pathogen}`, apiReq.query)
 
     /* validate and get some helpers*/
-    const [{
-        disinfectant, pathogen, temperature, inactivationLog, ph, concentration, isFormula
-    }, isFreeChlorine, validationErrors] = validate(apiReq.params, apiReq.query)
+    const [
+        {
+            disinfectant,
+            pathogen,
+            temperature,
+            inactivationLog,
+            ph,
+            concentration,
+            isFormula
+        },
+        isFreeChlorine,
+        validationErrors
+    ] = validate(apiReq.params, apiReq.query)
 
     /* if validation error send 400 */
     if (Object.keys(validationErrors).length !== 0) {
@@ -184,7 +194,7 @@ app.get('/:disinfectant/:pathogen', async (apiReq, apiRes) => {
 app.get('/now', async (apiReq, apiRes) => {
     console.log('GET /now')
     try {
-        const dbRes = await queryDb('SELECT NOW();');
+        const dbRes = await queryDb(pool, 'SELECT NOW()');
         return apiRes.status(200).send(dbRes.rows)
     } catch (err) {
         console.log(err)
