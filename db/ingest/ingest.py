@@ -1,6 +1,3 @@
-# example:
-# python ingest.py data > ingest.sql
-
 import os
 import sys
 import csv
@@ -54,4 +51,10 @@ for csv_name in list(filter(lambda x: '.csv' in x, os.listdir('.'))):
 
 sql = 'INSERT INTO {0}.{1} (temperature, inactivation_log, ph, concentration, inactivation) VALUES '.format(disinfectant, pathogen)
 sql = sql + ','.join(sql_vals) + ';'
+print(sql)
+
+# fixed temperatures in free_chlorine virus to account for 0.5
+sql = "ALTER TABLE free_chlorine.virus ALTER COLUMN temperature TYPE numeric(3,1);"
+sql = sql + "UPDATE free_chlorine.virus SET temperature = temperature - 1;"
+sql = sql + "UPDATE free_chlorine.virus SET temperature = 0.5 WHERE temperature = 0;"
 print(sql)
