@@ -16,15 +16,8 @@ const {
 const app = express()
 app.use(cors())
 
-const port = 8080
-const dbConfig = {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USR_API,
-    password: process.env.DB_PWD_API
-}
-const pool = new Pool(dbConfig)
+const port = process.env.PORT
+const pool = new Pool()
 
 app.get('/:disinfectant/:pathogen', async (apiReq, apiRes) => {
     console.log(`GET /${apiReq.params.disinfectant}/${apiReq.params.pathogen}`, apiReq.query)
@@ -209,4 +202,4 @@ app.get('*', (req, res) => {
     res.status(404).send('Not found');
 });
 
-app.listen(port, () => console.log(`ctcalc API running`))
+app.listen(port, () => console.log(`ctcalc api running on port ${port}`))
