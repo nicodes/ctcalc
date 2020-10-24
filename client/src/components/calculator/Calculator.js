@@ -7,7 +7,7 @@ import errorSvg from '../../images/error_outline.svg'
 import { disinfectantOptions, giardiaLogOptions, virusLogOptions } from './calculator.util';
 import './calculator.scss';
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiHost = process.env.REACT_APP_API_HOST
 
 const Calculator = () => {
     const [giardiaResult, setGiardiaResult] = useState()
@@ -46,13 +46,13 @@ const Calculator = () => {
             || (virusActive && virusLog === '')
         ) && (async () => {
             const urls = []
-            giardiaActive && urls.push(`${apiUrl}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
+            giardiaActive && urls.push(`${apiHost}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
                 + `${isFreeChlorine
                     ? `&ph=${ph}&concentration=${concentration}${methodology === 'formula'
                         ? '&formula=true'
                         : ''}`
                     : ''}`)
-            virusActive && urls.push(`${apiUrl}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`)
+            virusActive && urls.push(`${apiHost}/${disinfectant}/virus?temperature=${temperature}&inactivation-log=${virusLog}`)
             try {
                 setDisableAll(true)
                 const [giardiaRes, virusRes] = await Promise.all(urls.map(u => axios.get(u)));

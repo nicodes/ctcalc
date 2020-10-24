@@ -1,4 +1,6 @@
-pg_data*
-ingest/data
-ingest/*.sql
+data
+
 dump*
+!dump.sql.gz
+
+ingest/*.sql
