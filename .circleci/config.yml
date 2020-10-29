@@ -78,9 +78,9 @@ jobs:
         name: Stop, Pull, Restart Running Containers
         command: >
           ssh $SERVER_USR@$SERVER_URL " 
-            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file .env.prod down -v
-            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file .env.prod pull api
-            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file .env.prod up -d --build
+            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file $APP_DIR/.env.prod down -v
+            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file $APP_DIR/.env.prod pull api
+            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file $APP_DIR/.env.prod up -d --build
           "
     - slack/notify:
         message: "Finished ctcalc deploy"
