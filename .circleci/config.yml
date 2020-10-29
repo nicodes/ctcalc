@@ -49,6 +49,9 @@ jobs:
         fingerprints:
         - $SERVER_FINGERPRINT
     - run:
+        name: Add URL to known_hosts
+        command: ssh-keyscan -H $SERVER_URL >> ~/.ssh/known_hosts
+    - run:
         name: Copy .env to Droplet
         command: scp $SERVER_USR@$SERVER_URL:$APP_DIR/.env.prod client/.env
     - run:
@@ -61,9 +64,6 @@ jobs:
         command: |
           cd client
           npm run build
-    - run:
-        name: Add URL to known_hosts
-        command: ssh-keyscan -H $SERVER_URL >> ~/.ssh/known_hosts
     - run:
         name: Remove Outdated Build from Droplet
         command: ssh $SERVER_USR@$SERVER_URL rm -rf $APP_DIR/build
