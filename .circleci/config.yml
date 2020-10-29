@@ -19,6 +19,12 @@ jobs:
     - run:
         name: Copy docker-compose.yml to Droplet
         command: scp docker-compose.prod.yml $SERVER_USR@$SERVER_URL:$APP_DIR
+    - run:
+        name: Copy db init script
+        command: scp db/init.sh $SERVER_USR@$SERVER_URL:$APP_DIR/db
+    - run:
+        name: Copy db dump
+        command: scp db/dump.sql.gz $SERVER_USR@$SERVER_URL:$APP_DIR/db
   build_and_publish_api:
     docker:
     - image: circleci/buildpack-deps:stretch
@@ -72,9 +78,9 @@ jobs:
         name: Stop, Pull, Restart Running Containers
         command: >
           ssh $SERVER_USR@$SERVER_URL " 
-            docker-compose -f $APP_DIR/docker-compose.prod.yml down -v
-            docker-compose -f $APP_DIR/docker-compose.prod.yml pull api
-            docker-compose -f $APP_DIR/docker-compose.prod.yml up -d --build
+            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file .env.prod down -v
+            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file .env.prod pull api
+            docker-compose -f $APP_DIR/docker-compose.prod.yml --env-file .env.prod up -d --build
           "
     - slack/notify:
         message: "Finished ctcalc deploy"
