@@ -46,10 +46,13 @@ jobs:
     - checkout
     - setup_remote_docker
     - run:
+        name: Copy .env to Droplet
+        command: scp $SERVER_USR@$SERVER_URL:$APP_DIR/.env.prod client/.env
+    - run:
         name: Install Dependencies
         command: |
           cd client
-          npm i
+          npm i --production
     - run:
         name: Build Client
         command: |
