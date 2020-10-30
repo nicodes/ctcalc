@@ -100,6 +100,6 @@ workflows:
    - restart_containers:
       context: nicodes
       requires:
-       - update_docker_compose
+       - initialize_and_notify
        - build_and_publish_api
        - build_and_deploy_client
