@@ -86,17 +86,25 @@ jobs:
 workflows:
  version: 2.1
  deploy_prod:
-  filters:
-   branches:
-    only:
-     - master
   jobs:
    - initialize_and_notify:
       context: nicodes
+      filters:
+       branches:
+        only:
+         - master
    - build_and_publish_api:
       context: nicodes
+      filters:
+       branches:
+        only:
+         - master
    - build_and_deploy_client:
       context: nicodes
+      filters:
+       branches:
+        only:
+         - master
    - restart_containers:
       context: nicodes
       requires:
