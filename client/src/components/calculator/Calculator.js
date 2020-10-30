@@ -38,10 +38,7 @@ const Calculator = () => {
     const submit = () => {
         setGiardiaResult(undefined)
         setVirusResult(undefined)
-        !showErrors && setShowErrors(true);
-
-        console.log(`${apiHost}/${disinfectant}`)
-
+        !showErrors && setShowErrors(true)
         !(temperatureError
             || (isFreeChlorine && (phError || concentrationError))
             || (giardiaActive && giardiaLog === '')
