@@ -91,7 +91,7 @@ workflows:
     only:
      - master
   jobs:
-   - update_docker_compose:
+   - initialize_and_notify:
       context: nicodes
    - build_and_publish_api:
       context: nicodes
