@@ -6,9 +6,9 @@ jobs:
   machine: # TODO what's most light-weight option?
    image: ubuntu-1604:201903-01
   steps:
-   - checkout
    - slack/notify:
       message: "Starting ctcalc deploy"
+   - checkout
    - add_ssh_keys:
       fingerprints:
        - $SERVER_FINGERPRINT
@@ -35,7 +35,7 @@ jobs:
       command: |
        echo "$DOCKERHUB_PWD" | docker login -u $DOCKERHUB_USR --password-stdin
        docker push $DOCKERHUB_API_IMAGE
- build_and_deploy_client:
+ build_and_deploy_ui:
   docker:
    - image: circleci/node
   steps:
@@ -49,23 +49,23 @@ jobs:
       command: ssh-keyscan -H $SERVER_URL >> ~/.ssh/known_hosts
    - run:
       name: Copy .env for Build
-      command: scp $SERVER_USR@$SERVER_URL:$APP_DIR/.env.prod client/.env
+      command: scp $SERVER_USR@$SERVER_URL:$APP_DIR/.env.prod ui/.env
    - run:
       name: Install Dependencies
       command: |
-       cd client
+       cd ui
        npm i --production
    - run:
-      name: Build Client
+      name: Build UI
       command: |
-       cd client
+       cd ui
        npm run build
    - run:
       name: Remove Outdated Build from Droplet
       command: ssh $SERVER_USR@$SERVER_URL rm -rf $APP_DIR/build
    - run:
       name: Copy Build to Droplet
-      command: scp -r client/build $SERVER_USR@$SERVER_URL:$APP_DIR
+      command: scp -r ui/build $SERVER_USR@$SERVER_URL:$APP_DIR
  restart_containers:
   machine:
    image: ubuntu-1604:201903-01
@@ -99,7 +99,7 @@ workflows:
        branches:
         only:
          - master
-   - build_and_deploy_client:
+   - build_and_deploy_ui:
       context: nicodes
       filters:
        branches:
@@ -110,4 +110,4 @@ workflows:
       requires:
        - initialize_and_notify
        - build_and_publish_api
-       - build_and_deploy_client
+       - build_and_deploy_ui
