@@ -46,6 +46,7 @@ const Calculator = () => {
         ) && (async () => {
             const urls = []
             giardiaActive && urls.push(`${apiHost}/${disinfectant}/giardia?temperature=${temperature}&inactivation-log=${giardiaLog}`
+                + `${methodology === 'round' ? '&round=true' : ''}`
                 + `${isFreeChlorine
                     ? `&ph=${ph}&concentration=${concentration}${methodology === 'formula'
                         ? '&formula=true'
@@ -198,35 +199,33 @@ const Calculator = () => {
                 onChange={setVirusLog}
             />
 
-            {isFreeChlorine && giardiaActive && <>
-                <div className='label-container'>
-                    <span>Methodology:</span>
-                </div>
-                <div>
-                    <input
-                        type="radio"
-                        disabled={disableAll}
-                        checked={methodology === 'interpolate'}
-                        onChange={() => setMethodology('interpolate')} />
-                    <span>Interpolate</span>
+            <div className='label-container'>
+                <span>Methodology:</span>
+            </div>
+            <div>
+                <input
+                    type="radio"
+                    disabled={disableAll}
+                    checked={methodology === 'interpolate'}
+                    onChange={() => setMethodology('interpolate')} />
+                <span>Interpolate</span>
+                <br />
+                <input
+                    type="radio"
+                    disabled={disableAll}
+                    checked={methodology === 'round'}
+                    onChange={() => setMethodology('round')} />
+                <span>Round</span>
+                {isFreeChlorine && giardiaActive && <>
                     <br />
-
-                    {/* <input
-                        type="radio"
-                        disabled={disableAll}
-                        checked={!isFormula}
-                    />
-                    <span>Round</span>
-                    <br /> */}
-
                     <input
                         type="radio"
                         disabled={disableAll}
                         checked={methodology === 'formula'}
                         onChange={() => setMethodology('formula')} />
                     <span>Formula</span>
-                </div>
-            </>}
+                </>}
+            </div>
 
             <div className={'buttons-container'}>
                 <button
