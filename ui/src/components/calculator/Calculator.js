@@ -80,14 +80,6 @@ const Calculator = () => {
     const errorImg = text => showErrors && <><img src={errorSvg} data-tip={text} alt='error' /><ReactTooltip place='right' /></>
 
     return (<div className={'calculator'}>
-        <div style={{
-            marginTop: '20px',
-            padding: '20px',
-            textAlign: 'center',
-            backgroundColor: '#fcf8e3',
-            border: 'solid 2px #faf2cc',
-            color: '#8a6d3b'
-        }}>WARNING: this site is under development and should only be used for testing</div>
         <h1>CT Calculator</h1>
         <form>
             <div className='label-container'>
