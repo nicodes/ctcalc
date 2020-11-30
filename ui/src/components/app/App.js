@@ -20,8 +20,8 @@ const App = () => {
         <Link className={pathname === '/about' ? active : null} to="/about">About</Link>
         <div></div>
         <a style={{ marginLeft: 'auto' }} href='https://www.paypal.com/donate?hosted_button_id=TSJZP6V8WXKSN'>Donate</a>
-        <a style={{ width: '25px' }} target='_blank' href='https://github.com/nicodes/ctcalc'>
-          <img style={{ width: '100%' }} src={githubSvg} />
+        <a style={{ width: '25px' }} href='https://github.com/nicodes/ctcalc'>
+          <img style={{ width: '100%' }} src={githubSvg} alt='github logo' />
         </a>
       </nav>
       <main>
