@@ -238,11 +238,11 @@ const Calculator = () => {
             {(giardiaResult || virusResult) && <div className='divider' />}
             {giardiaResult && <>
                 <span className='result-container'>Giardia Inactivation:</span>
-                <input type='text' value={giardiaResult} />
+                <input type='text' value={giardiaResult} readOnly />
             </>}
             {virusResult && <>
                 <span>Virus Inactivation:</span>
-                <input type='text' value={virusResult} />
+                <input type='text' value={virusResult} readOnly />
             </>}
         </form>
     </div >);
