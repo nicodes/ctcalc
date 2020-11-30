@@ -5,7 +5,7 @@ const validate = (params, query) => {
     const ph = query.ph
     const concentration = query.concentration
     const inactivationLog = query['inactivation-log']
-    const isFormula = query.formula
+    const isFormula = query.formula === 'true'
     const isRound = query.round
     const err = []
 
