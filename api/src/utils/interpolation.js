@@ -1,5 +1,5 @@
 const linearInterpolate = (x, x0, x1, c0, c1) => {
-    console.log('bilinearInterpolate', x, x0, x1, c0, c1)
+    console.log('linearInterpolate', x, x0, x1, c0, c1)
     const c = c0 + (c1 - c0) / (x1 - x0) * (x - x0)
     return c
 }
