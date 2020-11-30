@@ -13,6 +13,7 @@ const About = () => {
             <p><a href={pdf} download>Click here to download EPA source documents</a></p>
             <p>This project is open source and can be viewed on <a href='http://github.com/nicodes/ctcalc'>github</a>.</p>
             <Link to="/">Click here to get started</Link>
+            <p>This project is funded by donations. If you find it useful please consider <a href='https://www.paypal.com/donate?hosted_button_id=TSJZP6V8WXKSN'>donating</a>.</p>
             <p>For more information or questions please contact us at <a href="mailto:info@ctcalc.com">info@ctcalc.com</a></p>
         </div >
     );
