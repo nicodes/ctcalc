@@ -6,8 +6,7 @@
     nav{
         background-color: #e3e3e3;
         height: 50px;
-        display: grid;
-        grid-template-columns: min-content min-content auto; 
+        display: flex;
         padding-left: 20px;
 
         a {

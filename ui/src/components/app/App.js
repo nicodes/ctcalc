@@ -8,6 +8,7 @@ import {
 
 import Calculator from '../calculator/Calculator'
 import About from '../about/About'
+import githubSvg from '../../assets/github.svg'
 import { style, active } from './app.module.scss'
 
 const App = () => {
@@ -17,6 +18,11 @@ const App = () => {
       <nav>
         <Link className={pathname === '/' ? active : null} to="/">CT Calc</Link>
         <Link className={pathname === '/about' ? active : null} to="/about">About</Link>
+        <div></div>
+        <a style={{ marginLeft: 'auto' }} href='https://www.paypal.com/donate?hosted_button_id=TSJZP6V8WXKSN'>Donate</a>
+        <a style={{ width: '25px' }} target='_blank' href='https://github.com/nicodes/ctcalc'>
+          <img style={{ width: '100%' }} src={githubSvg} />
+        </a>
       </nav>
       <main>
         <Switch>
