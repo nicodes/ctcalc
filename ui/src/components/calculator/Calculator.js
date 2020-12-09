@@ -3,7 +3,9 @@ import axios from 'axios'
 import ReactTooltip from 'react-tooltip';
 
 import Select from '../select/Select';
-import errorSvg from '../../images/error_outline.svg'
+import errorSvg from '../../assets/error_outline.svg'
+import helpSvg from '../../assets/help.svg'
+
 import { disinfectantOptions, giardiaLogOptions, virusLogOptions } from './calculator.util';
 import './calculator.scss';
 
@@ -195,28 +197,36 @@ const Calculator = () => {
                 <span>Methodology:</span>
             </div>
             <div>
-                <input
-                    type="radio"
-                    disabled={disableAll}
-                    checked={methodology === 'interpolate'}
-                    onChange={() => setMethodology('interpolate')} />
-                <span>Interpolate</span>
-                <br />
-                <input
-                    type="radio"
-                    disabled={disableAll}
-                    checked={methodology === 'round'}
-                    onChange={() => setMethodology('round')} />
-                <span>Round</span>
-                {isFreeChlorine && giardiaActive && <>
-                    <br />
+                <div style={{ display: 'flex' }}>
+                    <input
+                        type="radio"
+                        disabled={disableAll}
+                        checked={methodology === 'interpolate'}
+                        onChange={() => setMethodology('interpolate')} />
+                    <span>Interpolate</span>
+                    <img src={helpSvg} data-tip={'Linear interpolation using table values'} alt='error' style={{ height: '1.2em', paddingLeft: 5 }} /><ReactTooltip place='right' />
+                </div>
+
+                {/* <br /> */}
+                <div style={{ display: 'flex' }}>
+                    <input
+                        type="radio"
+                        disabled={disableAll}
+                        checked={methodology === 'round'}
+                        onChange={() => setMethodology('round')} />
+                    <span>Round</span>
+                    <img src={helpSvg} data-tip={'Selects most conservative table values by conservative rounding'} alt='error' style={{ height: '1.2em', paddingLeft: 5 }} /><ReactTooltip place='right' />
+                </div>
+
+                {isFreeChlorine && giardiaActive && <div style={{ display: 'flex' }}>
                     <input
                         type="radio"
                         disabled={disableAll}
                         checked={methodology === 'formula'}
                         onChange={() => setMethodology('formula')} />
                     <span>Formula</span>
-                </>}
+                    <img src={helpSvg} data-tip={'Calculate value using EPA Regression formula'} alt='error' style={{ height: '1.2em', paddingLeft: 5 }} /><ReactTooltip place='right' />
+                </div>}
             </div>
 
             <div className={'buttons-container'}>
