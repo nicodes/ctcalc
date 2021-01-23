@@ -35,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./api
-          file: Dockerfile.prod
+          file: ./api/Dockerfile.prod
           # platforms: linux/amd64,linux/arm64,linux/386
           push: true
           tags: nicodes/ctcalc-api
