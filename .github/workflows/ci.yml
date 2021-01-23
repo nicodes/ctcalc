@@ -54,4 +54,4 @@ jobs:
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
         source: './ui/build'
-        target: '/app'
+        target: '~/app/'
