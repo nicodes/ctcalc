@@ -45,7 +45,7 @@ jobs:
       working-directory: ./ui
       run: npm i --production
     - name: Build UI
-      working-directory: ./app
+      working-directory: ./ui
       run: npm run build
     - name: Copy Build to Remote
       uses: appleboy/scp-action@master
