@@ -59,7 +59,7 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
-        script: docker-compose -f ~/app/docker-compose.prod.yml --env-file ~/app/.env.prod down -v && docker-compose -d -f ~/app/docker-compose.prod.yml --env-file ~/app/.env.prod up --build
+        script: docker-compose -f ~/app/docker-compose.prod.yml --env-file ~/app/.env.prod down -v && docker-compose -f ~/app/docker-compose.prod.yml --env-file ~/app/.env.prod up -d --build
   slack-notify:
     name: Slack Notify
     needs: restart-app
