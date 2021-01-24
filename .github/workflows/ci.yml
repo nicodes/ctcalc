@@ -1,4 +1,4 @@
-name: Publish Docker image
+name: CT Calc Deploy
 on:
   push:
     branches: master
@@ -14,8 +14,8 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
-        source: 'docker-compose.prod.yml'
-        target: '~/app'
+        source: docker-compose.prod.yml
+        target: ~/app
   api-build:
     runs-on: ubuntu-latest
     steps:
@@ -45,7 +45,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.14'
+        node-version: 14.14
     - name: Install Dependenceis
       working-directory: ./ui
       run: npm i --production
@@ -58,8 +58,8 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
-        source: 'ui/build/*'
-        target: '~/app/build'
+        source: ui/build/*
+        target: ~/app/build
         strip_components: 2 # ignore path structure
         rm: true
   restart-app:
