@@ -1,7 +1,7 @@
 name: CT Calc Deploy
 on:
   push:
-    branches: master
+    branches: main
 jobs:
   copy-docker-compose:
     runs-on: ubuntu-latest
