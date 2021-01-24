@@ -45,7 +45,7 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
-        source: './ui/build'
+        source: './ui/build/*'
         target: '~/app/build'
         strip_components: 1 # recursive
         rm: true
@@ -60,7 +60,7 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
-        script: docker-compose -f ~/app/docker-compose.prod.yml --env-file ~/app/.env.prod down -v && docker-compose -f ~/app/docker-compose.prod.yml --env-file ~/app/.env.prod up -d --build
+        script: cd ~/app && docker-compose -f docker-compose.prod.yml --env-file .env.prod down -v && docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
   slack-notify:
     name: Slack Notify
     needs: restart-app
