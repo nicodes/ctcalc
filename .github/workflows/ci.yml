@@ -16,7 +16,6 @@ jobs:
         password: ${{ secrets.REMOTE_PASSWORD }}
         source: 'docker-compose.prod.yml'
         target: '~/app'
-        rm: true
   api-build:
     runs-on: ubuntu-latest
     steps:
@@ -64,7 +63,7 @@ jobs:
         rm: true
   restart-app:
     name: Restart App
-    needs: [api-build, ui-build]
+    needs: [copy-docker-compose, api-build, ui-build]
     runs-on: ubuntu-latest
     steps:
     - name: Restart App
