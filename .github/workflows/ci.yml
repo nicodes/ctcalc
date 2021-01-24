@@ -59,8 +59,8 @@ jobs:
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
         source: 'ui/build/*'
-        target: '~/app/build/'
-        strip_components: 1 # ignore path structure
+        target: '~/app/build'
+        strip_components: 2 # ignore path structure
         rm: true
   restart-app:
     name: Restart App
