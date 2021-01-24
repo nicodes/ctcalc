@@ -4,7 +4,6 @@ notes
 
 db/data
 db/dump*
-db/ingest/*.sql
 
 api/node_modules
 
