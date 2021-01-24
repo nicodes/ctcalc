@@ -3,6 +3,20 @@ on:
   push:
     branches: master
 jobs:
+  copy-docker-compose:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Copy Docker Compose to Remote
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USERNAME }}
+        password: ${{ secrets.REMOTE_PASSWORD }}
+        source: 'docker-compose.prod.yml'
+        target: '~/app'
+        rm: true
   api-build:
     runs-on: ubuntu-latest
     steps:
@@ -45,7 +59,7 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
-        source: './ui/build/*'
+        source: 'ui/build/*'
         target: '~/app/build'
         rm: true
   restart-app:
