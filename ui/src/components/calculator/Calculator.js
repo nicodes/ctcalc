@@ -9,7 +9,7 @@ import helpSvg from '../../assets/help.svg'
 import { disinfectantOptions, giardiaLogOptions, virusLogOptions } from './calculator.util';
 import './calculator.scss';
 
-const apiHost = process.env.REACT_APP_API_HOST
+const apiHost = process.env.REACT_APP_API_URL
 
 const Calculator = () => {
     const [giardiaResult, setGiardiaResult] = useState()
