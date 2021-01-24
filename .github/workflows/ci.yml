@@ -60,6 +60,7 @@ jobs:
         password: ${{ secrets.REMOTE_PASSWORD }}
         source: 'ui/build/*'
         target: '~/app/build'
+        strip_components: 1
         rm: true
   restart-app:
     name: Restart App
