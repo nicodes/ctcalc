@@ -1,5 +1,5 @@
 FROM node:13
 WORKDIR /app
 COPY . .
-RUN npm i
-CMD npm run start-prod
+RUN npm i --production
+CMD npm run prod

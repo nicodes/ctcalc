@@ -3,30 +3,25 @@ services:
  db:
   image: postgres:11
   environment:
-   - POSTGRES_USER
-   - POSTGRES_PASSWORD
-   - API_USER
-   - API_PASSWORD
+   - POSTGRES_USER=$DB_ADMIN_USR
+   - POSTGRES_PASSWORD=$DB_ADMIN_PWD
   ports:
-   - $DB_PORT:$DB_PORT
+   - 5432:$DB_PORT
   volumes:
    - ./db/data:/var/lib/postgresql/data
-   - ./db/init.sh:/docker-entrypoint-initdb.d/init.sh
-   - ./db/dump.sql.gz:/app/dump.sql.gz
   restart: always
-  command: -p $DB_PORT
  api:
   image: nicodes/ctcalc-api
   depends_on:
    - db
   environment:
-   - NODE_ENV
+   - NODE_ENV=$API_NODE_ENV
    - PORT=$API_PORT
-   - PGHOST
-   - PGPORT
-   - PGDATABASE
-   - PGUSER
-   - PGPASSWORD
+   - PGHOST=db
+   - PGPORT=$DB_PORT
+   - PGDATABASE=$DB_NAME
+   - PGUSER=$DB_API_USR
+   - PGPASSWORD=$DB_API_PWD
   ports:
    - $API_PORT:$API_PORT
  ui:
@@ -34,10 +29,9 @@ services:
   depends_on:
    - api
   environment:
-   - NODE_ENV
+   - NODE_ENV=$UI_NODE_ENV
    - REACT_APP_API_HOST
   ports:
    - 80:80
   volumes:
    - ./build:/usr/share/nginx/html
-   # - ./nginx.conf:/etc/nginx/nginx.conf # TODO get reverse proxy working
