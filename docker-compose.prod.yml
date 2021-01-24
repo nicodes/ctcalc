@@ -26,6 +26,8 @@ services:
    - $API_PORT:$API_PORT
  ui:
   image: nginx
+  environment:
+   - REACT_APP_API_URL=http://ctcalc.com:8080
   ports:
    - 80:80
   volumes:
