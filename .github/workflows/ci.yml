@@ -46,8 +46,7 @@ jobs:
         username: ${{ secrets.REMOTE_USERNAME }}
         password: ${{ secrets.REMOTE_PASSWORD }}
         source: './ui/build/*'
-        target: '~/app'
-        strip_components: 1 # recursive
+        target: '~/app/build'
         rm: true
   restart-app:
     name: Restart App
