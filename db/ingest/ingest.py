@@ -1,3 +1,5 @@
+# python ingest.py csv > ingest.sql
+
 import os
 import sys
 import csv
