@@ -2,10 +2,15 @@
 .env.prod
 notes
 
-db/data
-db/dump*
+/ingest/*
+!/ingest/README.md
+!/ingest/csv
+!/ingest/ingest.py
 
-api/node_modules
+/db/data
+/db/dump*
 
-ui/node_modules
-ui/build
+/api/node_modules
+
+/ui/node_modules
+/ui/build
