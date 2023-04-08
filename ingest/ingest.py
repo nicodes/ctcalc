@@ -24,11 +24,14 @@ for csv_name in list(filter(lambda x: '.csv' in x, os.listdir('.'))):
 
     for row in csv.reader(open(csv_name)):
         inactivation_log = row.pop(0)
-        if inactivation_log not in d[disinfectant][pathogen]:
-            d[disinfectant][pathogen][inactivation_log] = {}
 
         for i in range(len(row)):
-            d[disinfectant][pathogen][inactivation_log][i + 1] = float(row[i])
+            temperature = i + 1
+            if temperature not in d[disinfectant][pathogen]:
+                d[disinfectant][pathogen][temperature] = {}
+            if inactivation_log not in d[disinfectant][pathogen][temperature]:
+                d[disinfectant][pathogen][temperature][inactivation_log] = {}
+            d[disinfectant][pathogen][temperature][inactivation_log] = float(row[i])
 
 # free_chlorine__giardia
 os.chdir('free_chlorine__giardia')
