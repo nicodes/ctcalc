@@ -1,4 +1,4 @@
-# run: `python ingest.py csv > ingest.json`
+# run: `python ingest.py csv > inactivations.json`
 
 import os
 import sys
@@ -52,11 +52,11 @@ for csv_name in list(filter(lambda x: '.csv' in x, os.listdir('.'))):
         for i in range(len(row)):
             m = i % 6
             ph = (ph_i * 0.5) + ph_base
-            if ph_i not in d[disinfectant][pathogen][temperature][concentration]:
-                d[disinfectant][pathogen][temperature][concentration][ph_i] = {}
+            if ph not in d[disinfectant][pathogen][temperature][concentration]:
+                d[disinfectant][pathogen][temperature][concentration][ph] = {}
             
             inactivation_log = (m * 0.5) + 0.5
-            d[disinfectant][pathogen][temperature][concentration][ph_i][inactivation_log] = float(row[i])
+            d[disinfectant][pathogen][temperature][concentration][ph][inactivation_log] = float(row[i])
 
             if m == 5:
                 ph_i = ph_i + 1
