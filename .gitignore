@@ -9,3 +9,8 @@ api/node_modules
 
 ui/node_modules
 ui/build
+
+/ingest/*
+!/ingest/README.md
+!ingest/ingest.py
+!/ingest/csv
