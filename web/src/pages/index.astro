@@ -1,14 +1,138 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
 
-import styles from './index.module.scss';
+import styles from "./index.module.scss";
 
 export const prerender = true;
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const methodology = data.get("methodology");
+    const pathogen = data.get("pathogen");
+    const disinfectant = data.get("disinfectant");
+    const temperature = data.get("temperature");
+    const concentration = data.get("concentration");
+    const ph = data.get("ph");
+    const logInactivation = data.get("log_nactivation");
+
+    console.log(
+      "POST",
+      data,
+      methodology,
+      pathogen,
+      disinfectant,
+      temperature,
+      concentration,
+      ph,
+      logInactivation
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
 ---
 
 <Layout title="Welcome to Astro.">
-	<main class={styles.main}>
-		<h1>CT Calc</h1>
-	</main>
+  <main class={styles.main}>
+    <h1>CT Calc</h1>
+    <form method="POST">
+      <label for="methodology">Methodology:</label>
+      <select name="methodology" id="methodology">
+        <option value="formula">Formula</option>
+        <option value="interpolate">Linear Interpolation</option>
+      </select>
+      <br />
+
+      <label for="disinfectant">Disinfectant:</label>
+      <select name="disinfectant" id="disinfectant">
+        <option value="chloramine">Chloramine</option>
+        <option value="chlorine_dioxide">Chlorine Dioxide</option>
+        <option value="free_chlorine">Free Chlorine</option>
+        <option value="ozone">Ozone</option>
+      </select>
+      <br />
+
+      <label for="pathogen">Pathogen:</label>
+      <select name="pathogen" id="pathogen">
+        <option value="giardia">Giardia</option>
+        <option value="virus">Virus</option>
+      </select>
+      <br />
+
+      <label for="temperature">Temperature (°C):</label>
+      <input type="number" id="temperature" name="temperature" />
+      <br />
+
+      <div id="hidden-section">
+        <label for="concentration">Concentration:</label>
+        <input type="number" id="concentration" name="concentration" />
+        <br />
+
+        <label for="ph">pH:</label>
+        <input type="number" id="ph" name="ph" />
+        <br />
+      </div>
+
+      <label for="log_inactivation">Logs of Inactivation:</label>
+      <select name="log_inactivation" id="log_inactivation">
+        <option value="0.5">0.5</option>
+        <option value="1.0">1.0</option>
+        <option value="1.5">1.5</option>
+        <option value="2.0">2.0</option>
+        <option value="2.5">2.5</option>
+        <option value="3.0">3.0</option>
+      </select>
+      <br />
+
+      <button>Submit</button>
+    </form>
+  </main>
 </Layout>
+
+<script>
+  function disinfectantOnChange(e: any) {
+    const hiddenSection = document.getElementById("hidden-section");
+    if (!hiddenSection) return;
+
+    if (e.target.value === "free_chlorine")
+      hiddenSection.style.display = "block";
+    else hiddenSection.style.display = "none";
+  }
+
+  function pathogenOnChange(e: any) {
+    const logInactivationInput = document.getElementById("log_inactivation");
+    if (!logInactivationInput) return;
+
+    logInactivationInput.innerHTML = "";
+
+    const optionsArray: HTMLOptionElement[] = [];
+    if (e.target.value === "giardia")
+      for (let i = 0.5; i <= 3; i += 0.5) {
+        const option = document.createElement("option");
+        const value = i.toFixed(1);
+        option.value = value;
+        option.textContent = value;
+        optionsArray.push(option);
+      }
+    else
+      for (let i = 1; i <= 3; i++) {
+        const option = document.createElement("option");
+        const value = i.toFixed(1);
+        option.value = value;
+        option.textContent = value;
+        optionsArray.push(option);
+      }
+
+    logInactivationInput.append(...optionsArray);
+  }
+
+  const disinfectantInput = document.getElementById("disinfectant");
+  disinfectantInput?.addEventListener("change", disinfectantOnChange);
+
+  const pathogenInput = document.getElementById("pathogen");
+  pathogenInput?.addEventListener("change", pathogenOnChange);
+</script>
