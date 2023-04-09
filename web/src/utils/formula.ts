@@ -1,3 +1,12 @@
+/**
+ * Calculates the FC formula for temperatures below 12.5 degrees Celsius.
+ *
+ * @param inactivationLog The inactivation log value.
+ * @param temperature The temperature value in degrees Celsius.
+ * @param concentration The concentration value.
+ * @param ph The pH value.
+ * @returns The result of the FC formula.
+ */
 function fcFormulaLow(
   inactivationLog: number,
   temperature: number,
@@ -12,6 +21,15 @@ function fcFormulaLow(
   );
 }
 
+/**
+ * Calculates the FC formula for temperatures equal to or above 12.5 degrees Celsius.
+ *
+ * @param inactivationLog The inactivation log value.
+ * @param temperature The temperature value in degrees Celsius.
+ * @param concentration The concentration value.
+ * @param ph The pH value.
+ * @returns The result of the FC formula.
+ */
 function fcFormulaHigh(
   inactivationLog: number,
   temperature: number,
@@ -26,6 +44,15 @@ function fcFormulaHigh(
   );
 }
 
+/**
+ * Calculates the FC formula.
+ *
+ * @param inactivationLog - The inactivation log value.
+ * @param temperature - The temperature value in degrees Celsius.
+ * @param concentration - The concentration value.
+ * @param ph - The pH value.
+ * @returns The result of the FC formula.
+ */
 export function fcFormula(
   inactivationLog: number,
   temperature: number,
