@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
-
+import Nav from "../components/nav/Nav.astro";
+import Card from "../components/card/Card.astro";
 import styles from "./index.module.scss";
 
 export const prerender = true;
@@ -37,59 +37,62 @@ if (Astro.request.method === "POST") {
 ---
 
 <Layout title="Welcome to Astro.">
+  <Nav />
   <main class={styles.main}>
-    <h1>CT Calc</h1>
-    <form method="POST">
-      <label for="methodology">Methodology:</label>
-      <select name="methodology" id="methodology">
-        <option value="formula">Formula</option>
-        <option value="interpolate">Linear Interpolation</option>
-      </select>
-      <br />
-
-      <label for="disinfectant">Disinfectant:</label>
-      <select name="disinfectant" id="disinfectant">
-        <option value="chloramine">Chloramine</option>
-        <option value="chlorine_dioxide">Chlorine Dioxide</option>
-        <option value="free_chlorine">Free Chlorine</option>
-        <option value="ozone">Ozone</option>
-      </select>
-      <br />
-
-      <label for="pathogen">Pathogen:</label>
-      <select name="pathogen" id="pathogen">
-        <option value="giardia">Giardia</option>
-        <option value="virus">Virus</option>
-      </select>
-      <br />
-
-      <label for="temperature">Temperature (°C):</label>
-      <input type="number" id="temperature" name="temperature" />
-      <br />
-
-      <div id="hidden-section">
-        <label for="concentration">Concentration:</label>
-        <input type="number" id="concentration" name="concentration" />
+    <Card>
+      <h1>CT Calc</h1>
+      <form method="POST">
+        <label for="methodology">Methodology:</label>
+        <select name="methodology" id="methodology">
+          <option value="formula">Formula</option>
+          <option value="interpolate">Linear Interpolation</option>
+        </select>
         <br />
 
-        <label for="ph">pH:</label>
-        <input type="number" id="ph" name="ph" />
+        <label for="disinfectant">Disinfectant:</label>
+        <select name="disinfectant" id="disinfectant">
+          <option value="chloramine">Chloramine</option>
+          <option value="chlorine_dioxide">Chlorine Dioxide</option>
+          <option value="free_chlorine">Free Chlorine</option>
+          <option value="ozone">Ozone</option>
+        </select>
         <br />
-      </div>
 
-      <label for="log_inactivation">Logs of Inactivation:</label>
-      <select name="log_inactivation" id="log_inactivation">
-        <option value="0.5">0.5</option>
-        <option value="1.0">1.0</option>
-        <option value="1.5">1.5</option>
-        <option value="2.0">2.0</option>
-        <option value="2.5">2.5</option>
-        <option value="3.0">3.0</option>
-      </select>
-      <br />
+        <label for="pathogen">Pathogen:</label>
+        <select name="pathogen" id="pathogen">
+          <option value="giardia">Giardia</option>
+          <option value="virus">Virus</option>
+        </select>
+        <br />
 
-      <button>Submit</button>
-    </form>
+        <label for="temperature">Temperature (°C):</label>
+        <input type="number" id="temperature" name="temperature" />
+        <br />
+
+        <div id="hidden-section">
+          <label for="concentration">Concentration:</label>
+          <input type="number" id="concentration" name="concentration" />
+          <br />
+
+          <label for="ph">pH:</label>
+          <input type="number" id="ph" name="ph" />
+          <br />
+        </div>
+
+        <label for="log_inactivation">Logs of Inactivation:</label>
+        <select name="log_inactivation" id="log_inactivation">
+          <option value="0.5">0.5</option>
+          <option value="1.0">1.0</option>
+          <option value="1.5">1.5</option>
+          <option value="2.0">2.0</option>
+          <option value="2.5">2.5</option>
+          <option value="3.0">3.0</option>
+        </select>
+        <br />
+
+        <button>Submit</button>
+      </form>
+    </Card>
   </main>
 </Layout>
 
