@@ -9,7 +9,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v5
         env:
-          TEST_BUILD: 1
+          CYPRESS_TEST_BUILD: 1
         with:
           build: yarn build:local
           start: yarn preview:local
