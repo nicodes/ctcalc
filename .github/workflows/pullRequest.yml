@@ -4,9 +4,6 @@ jobs:
   cypress_tests:
     name: Cypress tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./web
     steps:
       - uses: actions/checkout@v3
       - name: Cypress run
@@ -14,3 +11,4 @@ jobs:
         with:
           build: yarn build
           start: yarn preview
+          working-directory: ./web
