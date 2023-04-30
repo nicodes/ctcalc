@@ -7,7 +7,7 @@ describe("Calculation Test", () => {
     const page = cy.visit("http://localhost:3000");
     cy.wait("@astro");
 
-    page.get("input").type(1);
+    page.get("input").type("1");
     page.get("select").last().select(0);
     page.get("button").click();
 
