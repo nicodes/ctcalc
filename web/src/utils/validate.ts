@@ -53,7 +53,6 @@ function isValidInactivationLog(inactivationLog: any, isGiardia?: boolean) {
 }
 
 type ValidatedParams = {
-  methodology: Methodology;
   disinfectant: Disinfectant;
   pathogen: Pathogen;
   temperature: number;
@@ -68,8 +67,8 @@ export function validate(
 ): [ValidatedParams, undefined?] | [undefined, string] {
   if (!queryParams) return [, "No arguments provided"];
 
-  if (!isValidMethodology(queryParams.methodology))
-    return [, `Invalid methodology: ${queryParams.methodology}`];
+  // if (!isValidMethodology(queryParams.methodology))
+  //   return [, `Invalid methodology: ${queryParams.methodology}`];
 
   if (!isValidDisinfectant(queryParams.disinfectant))
     return [, `Invalid disinfectant: ${queryParams.disinfectant}`];
@@ -97,7 +96,6 @@ export function validate(
     return [, `Invalid inactivation_log: ${queryParams["inactivation_log"]}`];
 
   const validatedparams: ValidatedParams = {
-    methodology: queryParams.methodology as Methodology,
     disinfectant: queryParams.disinfectant as Disinfectant,
     pathogen: queryParams.pathogen as Pathogen,
     temperature: Number(queryParams.temperature),

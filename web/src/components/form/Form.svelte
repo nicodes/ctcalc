@@ -1,7 +1,6 @@
 <script lang="ts">
   import styles from "./form.module.scss";
 
-  let methodology = "formula";
   let disinfectant = "chloramine";
   let pathogen = "giardia";
   let temperature = "";
@@ -9,7 +8,8 @@
   let ph = "";
   let logInactivation = "0.5";
 
-  let inactivation = "";
+  let formulaResult = "";
+  let interpolatedResult = "";
   let error = "";
 
   async function onSubmit(event: Event) {
@@ -17,8 +17,7 @@
 
     const response = await fetch(
       `/api/calc` +
-        `?methodology=${methodology}` +
-        `&disinfectant=${disinfectant}` +
+        `?disinfectant=${disinfectant}` +
         `&pathogen=${pathogen}` +
         `&temperature=${temperature}` +
         `&concentration=${concentration}` +
@@ -31,18 +30,13 @@
     );
 
     const json = await response.json();
-    inactivation = json.inactivation;
+    formulaResult = json.formulaResult;
+    interpolatedResult = json.interpolatedResult;
     error = json.error;
   }
 </script>
 
 <form class={styles.form} on:submit={onSubmit}>
-  <label for="methodology">Methodology:</label>
-  <select name="methodology" id="methodology" required bind:value={methodology}>
-    <option value="formula">Formula</option>
-    <option value="interpolate">Linear Interpolation</option>
-  </select>
-
   <label for="disinfectant">Disinfectant:</label>
   <select
     name="disinfectant"
@@ -115,10 +109,14 @@
   <br />
   <button type="submit">Submit</button>
 
-  {#if inactivation}
+  {#if formulaResult && interpolatedResult}
     <div class={styles.divider} />
-    <p class={styles.result}>Result:</p>
-    <p data-cy="result">{inactivation}</p>
+
+    <p class={styles.result}>Formula result:</p>
+    <p data-cy="result">{formulaResult}</p>
+
+    <p class={styles.result}>Interpolated result:</p>
+    <p data-cy="result">{interpolatedResult}</p>
   {:else if error}
     <div class={styles.divider} />
     <p class={styles.result}>Error:</p>
