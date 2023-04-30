@@ -1,18 +1,16 @@
 .nav {
   background-color: white;
   height: 50px;
-  padding: 0 2rem;
+  padding: 1rem 2rem;
   border-bottom: 3px solid grey;
 
   display: flex;
   align-items: center;
+  gap: 1rem;
 
-  & > :first-child {
-    font-size: 22px;
-  }
-
-  & > :nth-child(2) {
-    margin-right: 12px;
-    margin-left: auto;
+  // vertical dividers
+  & > :not(:last-child) {
+    padding-right: 1rem;
+    border-right: 2px solid grey;
   }
 }
