@@ -4,7 +4,7 @@ describe("Calculation Test", () => {
   it("does a calculation", () => {
     // wait for astro hydration
     cy.intercept(
-      !!process.env.TEST_BUILD ? "/_astro/**" : "/**/svelte-hooks*"
+      Cypress.env("TEST_BUILD") ? "/_astro/**" : "/**/svelte-hooks*"
     ).as("astro");
     const page = cy.visit("http://localhost:3000");
     cy.wait("@astro");
