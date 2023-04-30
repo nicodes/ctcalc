@@ -118,10 +118,10 @@
   {#if inactivation}
     <div class={styles.divider} />
     <p class={styles.result}>Result:</p>
-    <p>{inactivation}</p>
+    <p data-cy="result">{inactivation}</p>
   {:else if error}
     <div class={styles.divider} />
     <p class={styles.result}>Error:</p>
-    <p>{error}</p>
+    <p data-cy="result">{error}</p>
   {/if}
 </form>
