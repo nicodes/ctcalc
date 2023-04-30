@@ -1,0 +1,17 @@
+name: Pull request checks
+on: pull_request
+jobs:
+  code_integrity_check:
+    name: Code integrity check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+      - run: yarn install
+      - run: yarn build
