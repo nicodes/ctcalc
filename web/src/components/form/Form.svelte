@@ -116,11 +116,11 @@
   <button type="submit">Submit</button>
 
   {#if inactivation}
+    <div class={styles.divider} />
     <p class={styles.result}>Result:</p>
     <p>{inactivation}</p>
-  {/if}
-
-  {#if error}
+  {:else if error}
+    <div class={styles.divider} />
     <p class={styles.result}>Error:</p>
     <p>{error}</p>
   {/if}
