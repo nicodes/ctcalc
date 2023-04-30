@@ -7,7 +7,7 @@
   let temperature = "";
   let concentration = "";
   let ph = "";
-  let logInactivation = "";
+  let logInactivation = "0.5";
 
   let inactivation = "";
   let error = "";
