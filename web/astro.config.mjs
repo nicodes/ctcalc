@@ -7,9 +7,7 @@ import svelte from "@astrojs/svelte";
 export default defineConfig({
   output: "server",
   adapter: !!process.env.NODE_ADAPTER
-    ? node({
-        mode: "standalone",
-      })
-    : vercelEdge(),
+    ? node({ mode: "standalone" })
+    : vercelEdge({ analytics: true }),
   integrations: [svelte()],
 });
