@@ -44,7 +44,7 @@ function isValidConcentration(concentration: any) {
 
 // TODO should these be strings?
 const inactivationLogs = [2, 3, 4];
-const giardiaInactivationLogs = [0.5, 1, 1.5, 2, 2, 3];
+const giardiaInactivationLogs = [0.5, 1, 1.5, 2, 2.5, 3];
 function isValidInactivationLog(inactivationLog: any, isGiardia?: boolean) {
   if (typeof inactivationLog !== "number") return false;
   return (isGiardia ? giardiaInactivationLogs : inactivationLogs).includes(

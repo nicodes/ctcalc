@@ -2,45 +2,15 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/nav/Nav.astro";
 import Card from "../components/card/Card.astro";
-import styles from "./index.module.scss";
 import Form from "../components/form/Form.svelte";
+
 export const prerender = true;
-
-// if (Astro.request.method === "POST") {
-//   try {
-//     const data = await Astro.request.formData();
-//     const methodology = data.get("methodology");
-//     const pathogen = data.get("pathogen");
-//     const disinfectant = data.get("disinfectant");
-//     const temperature = data.get("temperature");
-//     const concentration = data.get("concentration");
-//     const ph = data.get("ph");
-//     const logInactivation = data.get("log_nactivation");
-
-//     console.log(
-//       "POST",
-//       data,
-//       methodology,
-//       pathogen,
-//       disinfectant,
-//       temperature,
-//       concentration,
-//       ph,
-//       logInactivation
-//     );
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       console.error(error.message);
-//     }
-//   }
-// }
 ---
 
 <Layout title="Welcome to Astro.">
   <Nav />
-  <main class={styles.main}>
-    <Card>
-      <h1>CT Calc</h1>
+  <main>
+    <Card heading="CT Calc">
       <Form client:load />
     </Card>
   </main>

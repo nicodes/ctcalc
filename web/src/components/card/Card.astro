@@ -1,9 +1,12 @@
 ---
 import styles from "./card.module.scss";
 
+const { heading, class: className } = Astro.props;
+
 export const prerender = true;
 ---
 
-<section class={styles.card}>
+<section class={`${styles.card} ${className}`}>
+  <h1>{heading}</h1>
   <slot />
 </section>

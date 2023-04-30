@@ -99,16 +99,16 @@
     bind:value={logInactivation}
   >
     {#if pathogen === "giardia"}
-      <option value="1.0">2.0</option>
-      <option value="2.0">3.0</option>
-      <option value="3.0">4.0</option>
-    {:else}
       <option value="0.5">0.5</option>
       <option value="1.0">1.0</option>
       <option value="1.5">1.5</option>
       <option value="2.0">2.0</option>
       <option value="2.5">2.5</option>
       <option value="3.0">3.0</option>
+    {:else}
+      <option value="1.0">2.0</option>
+      <option value="2.0">3.0</option>
+      <option value="3.0">4.0</option>
     {/if}
   </select>
 
