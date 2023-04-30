@@ -77,7 +77,6 @@ export function getInactivation(validatedParams: any): number {
   // TODO what to do about rounding?
 
   // Free Chlorine and Giardia requires trilinear interpolation over temperature, ph, and concentration
-  console.log("test", isFreeChlorine, isGiardia);
   if (isFreeChlorine && isGiardia) {
     const phLow = Number(Math.floor(ph / 0.5) * 0.5);
     const phHigh = Number(Math.ceil(ph / 0.5) * 0.5);
@@ -121,7 +120,6 @@ export function getInactivation(validatedParams: any): number {
     return interpolatedInactivation;
   }
 
-  console.log("Linear interpolation over temperature");
   const inactivations = [temperatureLow, temperatureHigh].map((t) =>
     getInactivationFromJSON(
       disinfectant,
