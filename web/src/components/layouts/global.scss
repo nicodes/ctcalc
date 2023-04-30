@@ -1,6 +1,8 @@
 body {
   height: 100vh;
   margin: 0;
+  background-color: lightgrey;
+
   display: flex;
   flex-direction: column;
 
@@ -15,11 +17,10 @@ select {
 
 main {
   height: 100%;
-  background-color: lightgrey;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 2rem;
+  margin: 2rem;
 }
 
 h1,
