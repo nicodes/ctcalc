@@ -10,6 +10,7 @@
   let logInactivation = "";
 
   let inactivation = "";
+  let error = "";
 
   async function onSubmit(event: Event) {
     event.preventDefault();
@@ -31,18 +32,24 @@
 
     const json = await response.json();
     inactivation = json.inactivation;
+    error = json.error;
   }
 </script>
 
 <form class={styles.form} on:submit={onSubmit}>
   <label for="methodology">Methodology:</label>
-  <select name="methodology" id="methodology" bind:value={methodology}>
+  <select name="methodology" id="methodology" required bind:value={methodology}>
     <option value="formula">Formula</option>
     <option value="interpolate">Linear Interpolation</option>
   </select>
 
   <label for="disinfectant">Disinfectant:</label>
-  <select name="disinfectant" id="disinfectant" bind:value={disinfectant}>
+  <select
+    name="disinfectant"
+    id="disinfectant"
+    required
+    bind:value={disinfectant}
+  >
     <option value="chloramine">Chloramine</option>
     <option value="chlorine_dioxide">Chlorine Dioxide</option>
     <option value="free_chlorine">Free Chlorine</option>
@@ -53,6 +60,7 @@
   <select
     name="pathogen"
     id="pathogen"
+    required
     bind:value={pathogen}
     on:change={() => (logInactivation = "")}
   >
@@ -65,6 +73,7 @@
     type="number"
     id="temperature"
     name="temperature"
+    required
     bind:value={temperature}
   />
 
@@ -74,17 +83,19 @@
       type="number"
       id="concentration"
       name="concentration"
+      required
       bind:value={concentration}
     />
 
     <label for="ph">pH:</label>
-    <input type="number" id="ph" name="ph" bind:value={ph} />
+    <input type="number" id="ph" name="ph" required bind:value={ph} />
   {/if}
 
   <label for="log-inactivation">Logs of Inactivation:</label>
   <select
     name="log-inactivation"
     id="log-inactivation"
+    required
     bind:value={logInactivation}
   >
     {#if pathogen === "giardia"}
@@ -107,5 +118,10 @@
   {#if inactivation}
     <p class={styles.result}>Result:</p>
     <p>{inactivation}</p>
+  {/if}
+
+  {#if error}
+    <p class={styles.result}>Error:</p>
+    <p>{error}</p>
   {/if}
 </form>
