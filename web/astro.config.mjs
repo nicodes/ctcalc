@@ -6,6 +6,10 @@ import svelte from "@astrojs/svelte";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  adapter: vercelServerless(),
+  adapter: !!process.env.BUILD_LOCAL
+    ? node({
+        mode: "standalone",
+      })
+    : vercelServerless(),
   integrations: [svelte()],
 });

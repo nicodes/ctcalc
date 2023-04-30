@@ -8,8 +8,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Cypress run
         uses: cypress-io/github-action@v5
-        env:
-          NODE_ADAPTER: true
         with:
           build: yarn build
           start: yarn preview

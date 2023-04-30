@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:local": "BUILD_LOCAL=true astro build",
     "preview": "astro preview",
+    "preview:local": "PREIEW_LOCAL=true astro preview",
     "astro": "astro"
   },
   "dependencies": {
