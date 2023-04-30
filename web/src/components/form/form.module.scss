@@ -1,0 +1,16 @@
+.form {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  label,
+  .result {
+    display: flex;
+    justify-content: right;
+  }
+}
+
+.result {
+  font-weight: bold;
+}
