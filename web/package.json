@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "ctcalc",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@astrojs/deno": "^4.1.0",
-    "astro": "^2.1.0"
+    "@astrojs/svelte": "^2.1.0",
+    "astro": "^2.1.0",
+    "svelte": "^3.54.0"
   },
   "devDependencies": {
     "sass": "^1.61.0"
