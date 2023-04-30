@@ -11,6 +11,9 @@ node_modules/
 /cypress/*
 !/cypress/e2e
 
+# vercel
+/.vercel
+
 # logs
 npm-debug.log*
 yarn-debug.log*
