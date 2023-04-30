@@ -1,4 +1,4 @@
-import { getInactivation } from "../../utils/inactivation";
+import { getResults } from "../../utils/inactivation";
 import { parseQueryParams } from "../../utils/parseQueryParams";
 import { validate } from "../../utils/validate";
 
@@ -12,8 +12,8 @@ export async function get({ params, request }) {
       headers: { "Content-Type": "application/json" },
     });
 
-  const inactivation = getInactivation(validatedParams);
-  return new Response(JSON.stringify({ inactivation }), {
+  const results = getResults(validatedParams);
+  return new Response(JSON.stringify(results), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });

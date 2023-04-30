@@ -42,9 +42,9 @@ export function getInactivationFromJSON(
  * @param validatedParams.ph pH value.
  * @param validatedParams.concentration Concentration value in mg/L.
  * @param validatedParams.inactivationLog Inactivation log value.
- * @returns Calculated inactivation value as a number.
+ * @returns Results of all calculation methodologies.
  */
-export function getInactivation(validatedParams: any): number {
+export function getResults(validatedParams: any) {
   const {
     methodology,
     disinfectant,
@@ -69,11 +69,14 @@ export function getInactivation(validatedParams: any): number {
   const temperatureHigh = Number(Math.ceil(t) * n);
 
   // Formula
-  if (isFormula) {
-    const result = fcFormula(inactivationLog, temperature, concentration, ph);
-    return result;
-  }
+  const formulaResult = fcFormula(
+    inactivationLog,
+    temperature,
+    concentration,
+    ph
+  );
 
+  let interpolatedResult: number;
   // TODO what to do about rounding?
 
   // Free Chlorine and Giardia requires trilinear interpolation over temperature, ph, and concentration
@@ -97,7 +100,7 @@ export function getInactivation(validatedParams: any): number {
       getInactivationFromJSON(disinfectant, pathogen, t, c, p, inactivationLog)
     );
 
-    const interpolatedInactivation = trilinearInterpolate(
+    interpolatedResult = trilinearInterpolate(
       temperature,
       temperatureLow,
       temperatureHigh,
@@ -116,28 +119,26 @@ export function getInactivation(validatedParams: any): number {
       inactivations[6],
       inactivations[7]
     );
+  } else {
+    const inactivations = [temperatureLow, temperatureHigh].map((t) =>
+      getInactivationFromJSON(
+        disinfectant,
+        pathogen,
+        t,
+        undefined,
+        undefined,
+        inactivationLog
+      )
+    );
 
-    return interpolatedInactivation;
+    interpolatedResult = linearInterpolate(
+      temperature,
+      temperatureLow,
+      temperatureHigh,
+      inactivations[0],
+      inactivations[1]
+    );
   }
 
-  const inactivations = [temperatureLow, temperatureHigh].map((t) =>
-    getInactivationFromJSON(
-      disinfectant,
-      pathogen,
-      t,
-      undefined,
-      undefined,
-      inactivationLog
-    )
-  );
-
-  const interpolatedInactivation = linearInterpolate(
-    temperature,
-    temperatureLow,
-    temperatureHigh,
-    inactivations[0],
-    inactivations[1]
-  );
-
-  return interpolatedInactivation;
+  return { formulaResult, interpolatedResult };
 }
