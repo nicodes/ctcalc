@@ -1,0 +1,24 @@
+{
+  "name": "ctcalc",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/deno": "^4.1.0",
+    "@astrojs/node": "^5.1.1",
+    "@astrojs/svelte": "^2.1.0",
+    "astro": "^2.2.0",
+    "svelte": "^3.54.0"
+  },
+  "devDependencies": {
+    "@types/cypress": "^1.1.3",
+    "cypress": "^12.11.0",
+    "sass": "^1.61.0"
+  }
+}

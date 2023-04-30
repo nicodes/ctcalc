@@ -1,0 +1,23 @@
+.form {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  label,
+  .result {
+    display: flex;
+    justify-content: right;
+  }
+}
+
+.result {
+  font-weight: bold;
+}
+
+.divider {
+  grid-column: span 2;
+  height: 3px;
+  background-color: grey;
+  border-radius: 4px;
+}

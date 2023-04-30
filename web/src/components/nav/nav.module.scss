@@ -1,0 +1,18 @@
+.nav {
+  background-color: white;
+  height: 50px;
+  padding: 0 2rem;
+  border-bottom: 3px solid grey;
+
+  display: flex;
+  align-items: center;
+
+  & > :first-child {
+    font-size: 22px;
+  }
+
+  & > :nth-child(2) {
+    margin-right: 12px;
+    margin-left: auto;
+  }
+}

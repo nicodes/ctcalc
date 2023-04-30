@@ -1,0 +1,17 @@
+---
+import Layout from "../components/layouts/Layout.astro";
+import Nav from "../components/nav/Nav.astro";
+import Card from "../components/card/Card.astro";
+import Form from "../components/form/Form.svelte";
+
+export const prerender = true;
+---
+
+<Layout title="Welcome to Astro.">
+  <Nav />
+  <main>
+    <Card heading="CT Calc">
+      <Form client:load />
+    </Card>
+  </main>
+</Layout>
