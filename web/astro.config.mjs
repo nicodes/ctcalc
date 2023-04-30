@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
-import vercelStatic from "@astrojs/vercel/static";
+import vercelEdge from "@astrojs/vercel/edge";
 import svelte from "@astrojs/svelte";
 
 // https://astro.build/config
@@ -10,6 +10,6 @@ export default defineConfig({
     ? node({
         mode: "standalone",
       })
-    : vercelStatic(),
+    : vercelEdge(),
   integrations: [svelte()],
 });
