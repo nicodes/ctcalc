@@ -1,16 +1,18 @@
 name: Pull request checks
 on: pull_request
 jobs:
-  cypress_tests:
+  cypress-tests:
     name: Cypress tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Cypress run
-        uses: cypress-io/github-action@v5
-        env:
-          CYPRESS_TEST_BUILD: 1
+      - uses: pnpm/action-setup@v2 # this package kind of sucks, handle install in cypress step
         with:
-          build: yarn build:local
-          start: yarn preview:local
-          working-directory: ./web
+          version: 7 # why is this needed?
+      - uses: cypress-io/github-action@v5
+        with:
+          working-directory: web
+          install-command: pnpm i --frozen-lockfile
+          build: pnpm run build:node
+          start: pnpm run preview:node
+          command: pnpm run test:preview
