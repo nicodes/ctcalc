@@ -9,11 +9,10 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7
-          run_install: |
-            cwd: web
       - uses: cypress-io/github-action@v5
         with:
-          install: false
+          # install: false
+          install-command: pnpm install --frozen-lockfile
           working-directory: web
           build: pnpm run build:local
           start: pnpm run preview:local
