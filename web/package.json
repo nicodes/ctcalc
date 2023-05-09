@@ -6,10 +6,11 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "build:local": "NODE_ADAPTER=1 astro build",
+    "build:node": "NODE_ADAPTER=1 astro build",
     "preview": "astro preview",
-    "preview:local": "NODE_ADAPTER=1 astro preview",
-    "test": "yarn cypress run",
+    "preview:node": "NODE_ADAPTER=1 astro preview",
+    "test:dev": "yarn cypress run",
+    "test:preview": "CYPRESS_TEST_PREVIEW=1 yarn cypress run",
     "astro": "astro"
   },
   "dependencies": {

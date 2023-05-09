@@ -13,5 +13,6 @@ jobs:
         with:
           install-command: pnpm install
           working-directory: web
-          build: pnpm run build:local
-          start: pnpm run preview:local
+          build: pnpm run build:node
+          start: pnpm run preview:node
+          command: pnpm run test:preview
