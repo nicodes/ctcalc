@@ -6,13 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2 # this package kind of sucks, handle install in cypress step
         with:
-          version: 7
+          version: 7 # why is this needed?
       - uses: cypress-io/github-action@v5
         with:
-          install-command: pnpm i --frozen-lockfile
           working-directory: web
+          install-command: pnpm i --frozen-lockfile
           build: pnpm run build:node
           start: pnpm run preview:node
           command: pnpm run test:preview
