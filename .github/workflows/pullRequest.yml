@@ -4,15 +4,15 @@ jobs:
   cypress-tests:
     name: Cypress tests
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: ./web
+    defaults:
+      run:
+        working-directory: web
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
           run_install: |
-            - cwd: ./web
+            - cwd: web
       - uses: cypress-io/github-action@v5
         with:
           build: yarn build:local
