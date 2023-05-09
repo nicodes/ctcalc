@@ -1,13 +1,24 @@
 .form {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto;
+  grid-auto-rows: 32px;
+
   gap: 1rem;
   margin-top: 2rem;
 
-  label,
-  .result {
-    display: flex;
-    justify-content: right;
+  // desktop view
+  @media only screen and (min-width: 480px) {
+    grid-template-columns: auto auto;
+
+    button {
+      grid-column: 2;
+    }
+
+    label,
+    .result {
+      display: flex;
+      justify-content: right;
+    }
   }
 }
 

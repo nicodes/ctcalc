@@ -106,7 +106,6 @@
     {/if}
   </select>
 
-  <br />
   <button type="submit">Submit</button>
 
   {#if formulaResult && interpolatedResult}
