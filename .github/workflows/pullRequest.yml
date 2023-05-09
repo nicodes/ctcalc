@@ -7,10 +7,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
+        with:
+          version: 7
       - uses: cypress-io/github-action@v5
         with:
-          working-directory: web
           install-command: pnpm i --frozen-lockfile
+          working-directory: web
           build: pnpm run build:node
           start: pnpm run preview:node
           command: pnpm run test:preview
