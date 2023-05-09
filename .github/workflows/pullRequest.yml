@@ -10,7 +10,7 @@ jobs:
         with:
           version: 7
           run_install: |
-            - cwd: web
+            cwd: web
       - uses: cypress-io/github-action@v5
         with:
           build: yarn build:local
