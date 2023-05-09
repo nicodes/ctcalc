@@ -10,7 +10,6 @@
     "preview": "astro preview",
     "preview:local": "NODE_ADAPTER=1 astro preview",
     "test": "yarn cypress run",
-    "test:build": "CYPRESS_TEST_BUILD=1 yarn cypress run",
     "astro": "astro"
   },
   "dependencies": {
