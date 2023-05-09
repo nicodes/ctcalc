@@ -13,6 +13,7 @@ jobs:
             cwd: web
       - uses: cypress-io/github-action@v5
         with:
+          install: false
+          working-directory: web
           build: pnpm run build:local
           start: pnpm run preview:local
-          working-directory: web
