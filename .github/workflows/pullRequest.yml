@@ -11,8 +11,7 @@ jobs:
           version: 7
       - uses: cypress-io/github-action@v5
         with:
-          # install: false
-          install-command: pnpm install --frozen-lockfile
+          install-command: pnpm install
           working-directory: web
           build: pnpm run build:local
           start: pnpm run preview:local
