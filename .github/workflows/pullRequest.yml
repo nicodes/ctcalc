@@ -7,6 +7,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Cache Node Modules
         id: pnpm-cache
         uses: actions/cache@v3
