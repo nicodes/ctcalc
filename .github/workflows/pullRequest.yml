@@ -1,18 +1,28 @@
-name: Pull request checks
-on: pull_request
+name: Run E2E tests
+on:
+  push:
 jobs:
-  cypress-tests:
-    name: Cypress tests
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2 # this package kind of sucks, handle install in cypress step
+
+      - name: Cache Node Modules
+        id: pnpm-cache
+        uses: actions/cache@v3
         with:
-          version: 7 # why is this needed?
-      - uses: cypress-io/github-action@v5
-        with:
-          working-directory: web
-          install-command: pnpm i --frozen-lockfile
-          build: pnpm run build:node
-          start: pnpm run preview:node
-          command: pnpm run test:preview
+          path: node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Generate Prime Numbers
+        if: steps.pnpm-cache.outputs.cache-hit != 'true'
+        run: pnpm i --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Serve
+        run: pnpm run preview:node
+
+      - name: Serve
+        run: pnpm run test:preview
