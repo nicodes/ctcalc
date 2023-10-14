@@ -6,7 +6,7 @@ describe("Calculation Test", () => {
     cy.intercept(
       Cypress.env("TEST_PREVIEW") ? "/_astro/**" : "/**/svelte-hooks*"
     ).as("astro");
-    const page = cy.visit("http://localhost:3000");
+    const page = cy.visit("http://localhost:4321");
     cy.wait("@astro");
 
     page.get("input").type("1");
