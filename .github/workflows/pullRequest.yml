@@ -1,18 +1,37 @@
-name: Pull request checks
-on: pull_request
+name: Run E2E tests
+on:
+  push:
 jobs:
-  cypress-tests:
-    name: Cypress tests
+  test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2 # this package kind of sucks, handle install in cypress step
+
+      - uses: pnpm/action-setup@v2
         with:
-          version: 7 # why is this needed?
-      - uses: cypress-io/github-action@v5
+          version: 8
+
+      - name: Cache node_modules and cypress
+        id: pnpm-cache
+        uses: actions/cache@v3
         with:
-          working-directory: web
-          install-command: pnpm i --frozen-lockfile
-          build: pnpm run build:node
-          start: pnpm run preview:node
-          command: pnpm run test:preview
+          path: |
+            web/node_modules
+            /home/runner/.cache/Cypress
+          key: ${{ runner.os }}-${{ hashFiles('web/pnpm-lock.yaml') }}
+
+      - name: Install dependencies if uncached
+        if: steps.pnpm-cache.outputs.cache-hit != 'true'
+        run: pnpm i --frozen-lockfile
+
+      - name: Build
+        run: pnpm build:node
+
+      - name: Serve
+        run: pnpm run preview:node &
+
+      - name: Run tests
+        run: pnpm run test:preview
