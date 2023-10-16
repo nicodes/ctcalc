@@ -31,5 +31,5 @@ jobs:
       - name: Serve
         run: pnpm run preview:node &
 
-      - name: Serve
+      - name: Run tests
         run: pnpm run test:preview
