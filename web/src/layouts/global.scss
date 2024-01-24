@@ -1,7 +1,8 @@
 body {
   height: 100vh;
   margin: 0;
-  background-color: lightgrey;
+  background-color: #333333;
+  color: white;
 
   display: flex;
   flex-direction: column;
@@ -26,4 +27,8 @@ main {
 h1,
 p {
   margin: 0;
+}
+
+a {
+  color: white;
 }
