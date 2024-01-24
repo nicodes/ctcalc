@@ -1,8 +1,7 @@
 .nav {
-  background-color: white;
   height: 50px;
   padding: 1rem 2rem;
-  border-bottom: 3px solid grey;
+  border-bottom: 3px solid white;
 
   display: flex;
   align-items: center;
@@ -11,6 +10,6 @@
   // vertical dividers
   & > :not(:last-child) {
     padding-right: 1rem;
-    border-right: 2px solid grey;
+    border-right: 2px solid white;
   }
 }
