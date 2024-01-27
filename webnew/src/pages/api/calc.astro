@@ -1,0 +1,31 @@
+---
+import { validate } from "../../scripts/server/validation";
+import { getResults } from "../../scripts/server/inactivation";
+export const partial = true;
+
+const { validatedFormData, error } = validate(await Astro.request.formData());
+
+if (error) return new Response(JSON.stringify(error), { status: 400 });
+
+console.log(validatedFormData);
+
+const results = getResults(validatedFormData);
+console.log(results);
+---
+
+<div style="grid-column: span 2; background-color: white; height: 4px;"></div>
+{
+  error ? (
+    <>
+      <p>Error:</p>
+      <p>{error}</p>
+    </>
+  ) : (
+    <>
+      <p>thing1:</p>
+      <p> {results.formulaResult}</p>
+      <p>thing2:</p>
+      <p>{results.interpolatedResult}</p>
+    </>
+  )
+}

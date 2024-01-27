@@ -45,7 +45,7 @@ import styles from "./form.module.scss";
 // };
 ---
 
-<form class={styles.form} action="/api/calc">
+<form class={styles.form} hx-post="/api/calc" hx-swap="beforeend">
   <label for="disinfectant">Disinfectant:</label>
   <select name="disinfectant" id="disinfectant" required>
     <option value="chloramine">Chloramine</option>
@@ -91,7 +91,8 @@ import styles from "./form.module.scss";
     <option value="3.0" class={styles.hidden}>4.0</option>
   </select>
 
-  <button type="submit">Submit</button>
+  <div></div>
+  <button>Submit</button>
 </form>
 
 <script>

@@ -1,6 +1,6 @@
 ---
-import "./global.scss";
 import Header from "../components/header/Header.astro";
+import "./global.scss";
 
 interface Props {
   title: string;
@@ -26,3 +26,7 @@ const { title } = Astro.props;
     </main>
   </body>
 </html>
+
+<script>
+  import "htmx.org";
+</script>
