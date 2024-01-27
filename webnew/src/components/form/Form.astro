@@ -45,7 +45,7 @@ import styles from "./form.module.scss";
 // };
 ---
 
-<form class={styles.form}>
+<form class={styles.form} action="/api/calc">
   <label for="disinfectant">Disinfectant:</label>
   <select name="disinfectant" id="disinfectant" required>
     <option value="chloramine">Chloramine</option>
@@ -70,7 +70,6 @@ import styles from "./form.module.scss";
     id="concentration"
     name="concentration"
     class={styles.hidden}
-    required
   />
 
   <label for="ph">pH:</label>
@@ -113,16 +112,20 @@ import styles from "./form.module.scss";
       'label[for="concentration"]'
     );
 
-    const concentrationSelect = document.getElementById("concentration");
+    const concentrationSelect = document.getElementById(
+      "concentration"
+    ) as HTMLSelectElement | null;
 
     if (select?.value === "free_chlorine") {
       concentrationLabel?.classList.remove(styles.hidden);
       concentrationSelect?.classList.remove(styles.hidden);
+      if (concentrationSelect) concentrationSelect.required = true;
       return;
     }
 
     concentrationLabel?.classList.add(styles.hidden);
     concentrationSelect?.classList.add(styles.hidden);
+    if (concentrationSelect) concentrationSelect.required = false;
   });
 
   pathogenSelect?.addEventListener("change", (e) => {
