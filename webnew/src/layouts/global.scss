@@ -1,0 +1,52 @@
+:root {
+  --black: #333333;
+  --white: #f8f8ff;
+
+  //   --desktop-break: 900px;
+  //   --header-max-width: 1400px;
+  //   --header-height: 88.98px;
+  //   --nav-width: 160px;
+  //   --content-max-width: 1000px;
+
+  --border-sm: 1px;
+  --border-md: 2px;
+  --border-lg: 3px;
+  --border-radius: 5px;
+
+  --font-xs: 0.8rem;
+  --font-sm: 1rem;
+  --font-md: 1.2rem;
+  --font-lg: 1.4rem;
+  --font-xl: 1.8rem;
+  --font-xxl: 2rem;
+
+  // fibonacci
+  --space-xs: 5px;
+  --space-sm: 8px;
+  --space-md: 13px;
+  --space-lg: 21px;
+  --space-xl: 34px;
+  --space-xxl: 55px;
+}
+
+* {
+  // all: unset;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--black);
+  color: var(--white);
+  font-size: var(--font-md);
+}
+
+a {
+  color: white;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--space-xxl);
+}

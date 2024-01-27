@@ -1,0 +1,158 @@
+---
+// Import the script functionality and styles
+import styles from "./form.module.scss";
+
+// let disinfectant = "chloramine";
+// let pathogen = "giardia";
+// let temperature = "";
+// let concentration = "";
+// let ph = "";
+// let logInactivation = "0.5";
+
+// let formulaResult = "";
+// let interpolatedResult = "";
+// let error = "";
+
+// const onSubmit = async (event) => {
+//   event.preventDefault();
+
+//   const response = await fetch(
+//     `/api/calc` +
+//       `?disinfectant=${disinfectant}` +
+//       `&pathogen=${pathogen}` +
+//       `&temperature=${temperature}` +
+//       `&concentration=${concentration}` +
+//       `&ph=${ph}` +
+//       `&inactivation_log=${logInactivation}`,
+//     {
+//       method: "GET",
+//       headers: { "Content-Type": "application/json" },
+//     }
+//   );
+
+//   const json = await response.json();
+//   formulaResult = json.formulaResult;
+//   interpolatedResult = json.interpolatedResult;
+//   error = json.error;
+// };
+
+// const updateLogInactivation = () => {
+//   logInactivation = "";
+// };
+
+// const updateValue = (event, variable) => {
+//   variable = event.target.value;
+// };
+---
+
+<form class={styles.form}>
+  <label for="disinfectant">Disinfectant:</label>
+  <select name="disinfectant" id="disinfectant" required>
+    <option value="chloramine">Chloramine</option>
+    <option value="chlorine_dioxide">Chlorine Dioxide</option>
+    <option value="free_chlorine">Free Chlorine</option>
+    <option value="ozone">Ozone</option>
+  </select>
+
+  <label for="pathogen">Pathogen:</label>
+  <select name="pathogen" id="pathogen" required>
+    <option value="giardia">Giardia</option>
+    <option value="virus">Virus</option>
+  </select>
+
+  <label for="temperature">Temperature (°C):</label>
+  <input type="number" id="temperature" name="temperature" required />
+
+  <!-- visible if disinfectant === free_chlorine -->
+  <label for="concentration" class={styles.hidden}>Concentration:</label>
+  <input
+    type="number"
+    id="concentration"
+    name="concentration"
+    class={styles.hidden}
+    required
+  />
+
+  <label for="ph">pH:</label>
+  <input type="number" id="ph" name="ph" required />
+
+  <label for="log-inactivation">Logs of Inactivation:</label>
+  <select name="log-inactivation" id="log-inactivation" required>
+    <!-- visible if pathogen === giardia -->
+    <option value="0.5">0.5</option>
+    <option value="1.0">1.0</option>
+    <option value="1.5">1.5</option>
+    <option value="2.0">2.0</option>
+    <option value="2.5">2.5</option>
+    <option value="3.0">3.0</option>
+
+    <!-- visible if pathogen === virus -->
+    <option value="1.0" class={styles.hidden}>2.0</option>
+    <option value="2.0" class={styles.hidden}>3.0</option>
+    <option value="3.0" class={styles.hidden}>4.0</option>
+  </select>
+
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  import styles from "./form.module.scss";
+
+  const disinfectantSelect = document.getElementById(
+    "disinfectant"
+  ) as HTMLSelectElement;
+
+  const pathogenSelect = document.getElementById(
+    "pathogen"
+  ) as HTMLSelectElement;
+
+  disinfectantSelect?.addEventListener("change", (e) => {
+    const select = e.target as HTMLSelectElement | null;
+
+    const concentrationLabel = document.querySelector(
+      'label[for="concentration"]'
+    );
+
+    const concentrationSelect = document.getElementById("concentration");
+
+    if (select?.value === "free_chlorine") {
+      concentrationLabel?.classList.remove(styles.hidden);
+      concentrationSelect?.classList.remove(styles.hidden);
+      return;
+    }
+
+    concentrationLabel?.classList.add(styles.hidden);
+    concentrationSelect?.classList.add(styles.hidden);
+  });
+
+  pathogenSelect?.addEventListener("change", (e) => {
+    const select = e.target as HTMLSelectElement | null;
+
+    const logInactivationSelect = document.getElementById(
+      "log-inactivation"
+    ) as HTMLSelectElement;
+
+    const visibleLogInactivationOptions = document
+      .getElementById("log-inactivation")
+      ?.querySelectorAll(`option:not(.${styles.hidden})`);
+
+    const hiddenLogInactivationOptions = document
+      .getElementById("log-inactivation")
+      ?.querySelectorAll(`option.${styles.hidden}`);
+
+    visibleLogInactivationOptions?.forEach((option) => {
+      option.classList.add(styles.hidden);
+    });
+
+    hiddenLogInactivationOptions?.forEach((option) => {
+      option.classList.remove(styles.hidden);
+    });
+
+    if (select?.value === "virus") {
+      logInactivationSelect.value = "2.0";
+      return;
+    }
+
+    logInactivationSelect.value = "0.5";
+  });
+</script>

@@ -1,0 +1,18 @@
+.header {
+  padding: var(--space-md);
+  border-bottom: 3px solid var(--white);
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+
+  & > :first-child {
+    margin-right: auto;
+  }
+
+  // vertical dividers
+  & > :last-child {
+    padding-left: var(--space-md);
+    border-left: 2px solid var(--white);
+  }
+}

@@ -1,0 +1,16 @@
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  // background-color: red;
+
+  max-width: 600px;
+
+  @media screen and (min-width: 400px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.hidden {
+  display: none;
+}
